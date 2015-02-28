@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Webapp -->
+      <package
+            uri="http://www.disim.univaq.it/mde/webapp"
+            class="webapp.WebappPackage"
+            genModel="model/Webapp.genmodel"/>
+   </extension>
+
+</plugin>

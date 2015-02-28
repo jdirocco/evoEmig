@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/it.univaq.disim.mde.evowebapp/src" modelPluginID="it.univaq.disim.mde.evowebapp"
+    modelName="EvoWebapp" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>evoWebapp.ecore</foreignModel>
+  <genPackages prefix="Webapp" disposableProviderFactory="true" ecorePackage="evoWebapp.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="evoWebapp.ecore#//LayoutStyle">
+      <genEnumLiterals ecoreEnumLiteral="evoWebapp.ecore#//LayoutStyle/Vertical"/>
+      <genEnumLiterals ecoreEnumLiteral="evoWebapp.ecore#//LayoutStyle/Horizontal"/>
+      <genEnumLiterals ecoreEnumLiteral="evoWebapp.ecore#//LayoutStyle/Grid"/>
+    </genEnums>
+    <genClasses ecoreClass="evoWebapp.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//WebApp">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//WebApp/collections"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//WebApp/router"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//WebApp/models"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//Model">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//Model/attributes"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//Collection">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//Collection/models"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//Data">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//Data/endpoint"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//View">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//View/subviews"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//View/template"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//View/data"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//Router">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//Router/bindings"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//Template">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//Template/structure"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//Template/style"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//ModelAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//ModelAttribute/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//ModelAttribute/value"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//RouterBinding">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//RouterBinding/requestURL"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//RouterBinding/controller"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="evoWebapp.ecore#//Controller"/>
+    <genClasses ecoreClass="evoWebapp.ecore#//PageController">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference evoWebapp.ecore#//PageController/page"/>
+    </genClasses>
+    <genClasses ecoreClass="evoWebapp.ecore#//ServiceController"/>
+    <genClasses ecoreClass="evoWebapp.ecore#//Style">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute evoWebapp.ecore#//Style/styleRules"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

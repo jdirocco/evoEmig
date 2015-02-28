@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ASCII"?>
+<webapp:WebApp xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:webapp="http://www.disim.univaq.it/mde/webapp" name="Users Management">
+  <collections name="users" endpoint="/api/users" model="//@models.0"/>
+  <router>
+    <bindings url="/users/[:id]" controller="//@controllers.0"/>
+  </router>
+  <models name="user" endpoint="/api/users/[:id]">
+    <attributes name="name"/>
+    <attributes name="surname"/>
+    <attributes name="age" baseType="number"/>
+    <attributes name="id"/>
+  </models>
+  <controllers xsi:type="webapp:PageController" name="UsersPageController" page="//@views.0">
+    <parameters name="user" baseType="object" customType="app.models.user"/>
+  </controllers>
+  <templates name="usersTemplate" structure="&lt;h1>Users&lt;/h1>" style="h1 { color: red; }"/>
+  <views name="UsersPage" template="//@templates.0" data="//@collections.0"/>
+</webapp:WebApp>
