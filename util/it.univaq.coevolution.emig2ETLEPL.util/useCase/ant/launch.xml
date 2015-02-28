@@ -1,0 +1,30 @@
+<project default="main"> 
+	<target name="main">
+		<epsilon.emf.loadModel name="Delta"  
+			modelfile="DifferenceModel.xmi" 
+			metamodeluri="http://www.eclipse.org/emf/2002/EcoreDiff" 
+			read="true" store="false"/>
+		<epsilon.emf.loadModel name="mtl"  
+			modelfile="Generate.emtl"  
+			metamodeluri="http://www.eclipse.org/acceleo/mtl/3.0" 
+			read="true" store="false"/>
+		<epsilon.emf.loadModel name="Metamodel"  
+			modelfile="Webapp.ecore"  
+			metamodeluri="http://www.eclipse.org/emf/2002/Ecore" 
+			read="true" store="false"/>
+		<epsilon.emf.loadModel name="evoMetamodel"  
+			modelfile="evoWebapp.ecore"  
+			metamodeluri="http://www.eclipse.org/emf/2002/Ecore" 
+			read="true" store="false"/>
+		<epsilon.epl src="Pattern.epl" exportAs="Pattern">
+			<model ref="Delta"/>
+		</epsilon.epl>
+		<epsilon.etl src="MigrationOld.etl">
+			<model ref="Pattern"/>
+ 			<model ref="Delta"/>
+ 			<model ref="mtl"/>
+ 			<model ref="Metamodel"/>
+ 			<model ref="evoMetamodel"/>
+		</epsilon.etl>
+	</target>
+</project>

@@ -1,0 +1,37 @@
+pattern splitAttributeBNR2
+	changedClassBNR2 : Delta!ChangedEClass, 
+			a1 : Delta!AddedEAttribute
+,			a2 : Delta!AddedEAttribute
+,			delAttribute : Delta!DeletedEAttribute
+{
+	match : 
+			changedClassBNR2.eStructuralFeatures.includes(a1)
+and			changedClassBNR2.eStructuralFeatures.includes(a2)
+and			changedClassBNR2.eStructuralFeatures.includes(delAttribute)
+}
+
+pattern extractInlineMetaClassBNR1
+	changedPackageBNR1 : Delta!ChangedEPackage, 
+			changedClassBNR1 : Delta!ChangedEClass, 
+					deleteAttributeBNR1 : Delta!DeletedEAttribute
+,					addReferenceBNR1 : Delta!AddedEReference
+,			addedClassBNR1 : Delta!AddedEClass, 
+					addedAttribute1BNR1 : Delta!AddedEAttribute
+,					addedAttribute2BNR1 : Delta!AddedEAttribute
+{
+	match : 
+		changedPackageBNR1.eClassifiers.includes(changedClassBNR1)and 
+					changedClassBNR1.eStructuralFeatures.includes(deleteAttributeBNR1)
+and					changedClassBNR1.eStructuralFeatures.includes(addReferenceBNR1)
+and		changedPackageBNR1.eClassifiers.includes(addedClassBNR1)and 
+					addedClassBNR1.eStructuralFeatures.includes(addedAttribute1BNR1)
+and					addedClassBNR1.eStructuralFeatures.includes(addedAttribute2BNR1)
+		}
+
+pattern changeReferenceTypeBNR3
+	changedClassBNR3 : Delta!ChangedEClass, 
+			changeRefBNR3 : Delta!ChangedEReference
+{
+	match : 
+			changedClassBNR3.eStructuralFeatures.includes(changeRefBNR3)
+}
