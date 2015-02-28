@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="generate" name="it.univaq.coevolution.evoEmig">
     <property name="ECLIPSE_HOME" value="../../../../../Desktop/eclipse/eclipse kepler"/>
-    <property name="ECLIPSE_WORKSPACE" value="../.."/>
+    <property name="ECLIPSE_WORKSPACE" value="../../../../../Documents/workspace/Emig2ETLAcceleo"/>
 
     <!-- The classpath with only the dependencies used by the project -->
     <path id="it.univaq.coevolution.evoEmig.libraryclasspath">

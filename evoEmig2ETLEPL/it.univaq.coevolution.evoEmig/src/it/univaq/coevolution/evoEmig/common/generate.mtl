@@ -90,8 +90,8 @@ rule [it.name/]
 // Updates everything to the evolved metamodel without doing any other change.
 
 rule Module
-  transform s : Acceleo!Module
-  to t : evoAcceleo!Module {
+  transform s : mtl!Module
+  to t : mtl!Module {
   	'Transforming Module'.debug();
   	
 	t.name = s.name;
@@ -115,8 +115,8 @@ rule Module
 }
  
 rule TypedModel
-  transform s : Acceleo!TypedModel
-  to t : evoAcceleo!TypedModel {
+  transform s : mtl!TypedModel
+  to t : mtl!TypedModel {
   	'Transforming TypedModel'.debug();
 
     t.takesTypesFrom = s.takesTypesFrom.convert(); // contains the main metamodel EPackage
@@ -125,8 +125,8 @@ rule TypedModel
   }
 
 rule Template
-  transform s : Acceleo!Template
-  to t : evoAcceleo!Template {
+  transform s : mtl!Template
+  to t : mtl!Template {
   	'Transforming Template'.debug();
   
     t.name = s.name;
@@ -155,8 +155,8 @@ rule Template
   }
   
 rule FileBlock
-  transform s : Acceleo!FileBlock
-  to t : evoAcceleo!FileBlock {
+  transform s : mtl!FileBlock
+  to t : mtl!FileBlock {
   	'Transforming FileBlock'.debug();
   
     t.name = s.name;
@@ -181,8 +181,8 @@ rule FileBlock
   }
   
 rule ForBlock
-  transform s : Acceleo!ForBlock
-  to t : evoAcceleo!ForBlock {
+  transform s : mtl!ForBlock
+  to t : mtl!ForBlock {
   	'Transforming ForBlock'.debug();
 
     t.name = s.name;
@@ -209,8 +209,8 @@ rule ForBlock
   }
   
 rule IfBlock
-  transform s : Acceleo!IfBlock
-  to t : evoAcceleo!IfBlock {
+  transform s : mtl!IfBlock
+  to t : mtl!IfBlock {
     'Transforming IfBlock'.debug();
     
     t.name = s.name;
@@ -232,8 +232,8 @@ rule IfBlock
   }
   
 rule Block
-  transform s : Acceleo!Block
-  to t : evoAcceleo!Block {
+  transform s : mtl!Block
+  to t : mtl!Block {
     'Transforming Block'.debug();
     
     t.name = s.name;
@@ -252,8 +252,8 @@ rule Block
   }
   
 rule TemplateInvocation
-  transform s : Acceleo!TemplateInvocation
-  to t : evoAcceleo!TemplateInvocation {
+  transform s : mtl!TemplateInvocation
+  to t : mtl!TemplateInvocation {
   guard : not isBNR3(s)
   	'Transforming TemplateInvocation'.debug();
   
@@ -277,11 +277,11 @@ rule TemplateInvocation
   
 // We need to use the right type here, which is under ocl::ecore,
 // otherwise the rule won't match and won't be called.
-// Don't use @greedy + Acceleo!StringLiteralExp since would lead to
+// Don't use @greedy + mtl!StringLiteralExp since would lead to
 // ArrayStoreException and cast errors when copying the transformed object in the parent.
 rule StringLiteralExp
-  transform s : Acceleo!ocl::ecore::StringLiteralExp
-  to t : evoAcceleo!ocl::ecore::StringLiteralExp {   
+  transform s : mtl!ocl::ecore::StringLiteralExp
+  to t : mtl!ocl::ecore::StringLiteralExp {   
   	'Transforming StringLiteralExp'.debug();
   
     t.startPosition = s.startPosition;
@@ -294,8 +294,8 @@ rule StringLiteralExp
   }
   
 rule PropertyCallExp
-  transform s : Acceleo!ocl::ecore::PropertyCallExp
-  to t : evoAcceleo!ocl::ecore::PropertyCallExp {
+  transform s : mtl!ocl::ecore::PropertyCallExp
+  to t : mtl!ocl::ecore::PropertyCallExp {
   guard : not isBNR1(s) and not isBNR2(s)
     'Transforming PropertyCallExp'.debug();
     
@@ -320,8 +320,8 @@ rule PropertyCallExp
   }
   
 rule OperationCallExp
-  transform s : Acceleo!ocl::ecore::OperationCallExp
-  to t : evoAcceleo!ocl::ecore::OperationCallExp {
+  transform s : mtl!ocl::ecore::OperationCallExp
+  to t : mtl!ocl::ecore::OperationCallExp {
   	'Transforming OperationCallExp'.debug();
   
     t.startPosition = s.startPosition;
@@ -340,8 +340,8 @@ rule OperationCallExp
   }
   
 rule TypeExp
-  transform s : Acceleo!ocl::ecore::TypeExp
-  to t : evoAcceleo!ocl::ecore::TypeExp {
+  transform s : mtl!ocl::ecore::TypeExp
+  to t : mtl!ocl::ecore::TypeExp {
     'Transforming TypeExp'.debug();
     
     t.name = s.name;
@@ -361,8 +361,8 @@ rule TypeExp
   }
 
 rule VariableExp
-  transform s : Acceleo!ocl::ecore::VariableExp
-  to t : evoAcceleo!ocl::ecore::VariableExp {
+  transform s : mtl!ocl::ecore::VariableExp
+  to t : mtl!ocl::ecore::VariableExp {
     'Transforming VariableExp'.debug();
     
 	t.name = s.name;
@@ -382,8 +382,8 @@ rule VariableExp
   }
 
 rule Variable
-  transform s : Acceleo!ocl::ecore::Variable
-  to t : evoAcceleo!ocl::ecore::Variable {
+  transform s : mtl!ocl::ecore::Variable
+  to t : mtl!ocl::ecore::Variable {
     'Transforming Variable'.debug();
     
     t.name = s.name;
@@ -404,8 +404,8 @@ rule Variable
   }
   
 rule SetType
-  transform s : Acceleo!ocl::ecore::SetType
-  to t : evoAcceleo!ocl::ecore::SetType {
+  transform s : mtl!ocl::ecore::SetType
+  to t : mtl!ocl::ecore::SetType {
     'Transforming SetType'.debug();
 
     t.name = s.name;
@@ -426,8 +426,8 @@ rule SetType
   }
 
 rule OrderedSetType
-  transform s : Acceleo!ocl::ecore::OrderedSetType
-  to t : evoAcceleo!ocl::ecore::OrderedSetType {
+  transform s : mtl!ocl::ecore::OrderedSetType
+  to t : mtl!ocl::ecore::OrderedSetType {
     'Transforming OrderedSetType'.debug();
     
     t.name = s.name;
@@ -448,8 +448,8 @@ rule OrderedSetType
   }
   
 rule CollectionLiteralExp
-  transform s : Acceleo!ocl::ecore::CollectionLiteralExp
-  to t : evoAcceleo!ocl::ecore::CollectionLiteralExp {
+  transform s : mtl!ocl::ecore::CollectionLiteralExp
+  to t : mtl!ocl::ecore::CollectionLiteralExp {
     'Transforming CollectionLiteralExp'.debug();
     
     t.name = s.name;
@@ -472,8 +472,8 @@ rule CollectionLiteralExp
   }
   
 rule CollectionItem
-  transform s : Acceleo!ocl::ecore::CollectionItem
-  to t : evoAcceleo!ocl::ecore::CollectionItem {
+  transform s : mtl!ocl::ecore::CollectionItem
+  to t : mtl!ocl::ecore::CollectionItem {
     'Transforming CollectionItem'.debug();
     
     t.name = s.name;
@@ -517,7 +517,7 @@ operation Metamodel!ecore::EClass convert() : evoMetamodel!ecore::EClass {
 
 // EAttribute is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : Acceleo!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EAttribute {
+operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : mtl!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EAttribute {
   // (self is the PropertyCallExp referredProperty)
   
   'Converting EAttribute '.concat(self.name).debug();
@@ -537,7 +537,7 @@ operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : Acceleo!ocl
 
 // EReference is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : Acceleo!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EReference {
+operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : mtl!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EReference {
   // (self is the PropertyCallExp referredProperty)
   
   'Converting EReference '.concat(self.name).debug();
@@ -625,11 +625,12 @@ pattern [it.name/]
 [/template]
 [template public generateGuard(it : Rule)]
 operation is_[it.name/] ([it.rewritingRules.left.varName/] : [it.eContainer().oclAsType(MigrationProgram).metamodels.name/]![it.rewritingRules.left.type.name/]) : Boolean {
-return 
+ if ([it.name/].isUndefined()) return false;
+return  
 [if (it.filter.oclIsTypeOf(ClassOpDef))]
 	Pattern![it.name/][if (it.filter.op = 'changeClass' or it.filter.op = 'deleteClass')][it.filter.oclAsType(ClassOpDef).classPar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] 
-[for (featureOp : FeatureOpDef | it.filter.oclAsType(ClassOpDef).featureOp) separator ('and')]
-		[if (featureOp.oclIsTypeOf(NamedElement))]
+[for (featureOp : FeatureOpDef | it.filter.oclAsType(ClassOpDef).featureOp) separator ('and' )]
+		[if (featureOp.oclIsTypeOf(AttributeOpDef))]
 			[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty 
 		[else] 1 = 1 [/if]
 		[/if]
@@ -642,7 +643,7 @@ return
 [if (it.filter.oclIsTypeOf(PackageOpDef))]
 	Pattern![it.name/][if (it.filter.op = 'changePackage' or it.filter.op = 'deletePackage')][it.filter.oclAsType(PackageOpDef).packagePar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(PackageOpDef).classesOp->size()>0)] and [/if]
 	[for (classeOp : ClassOpDef | it.filter.oclAsType(PackageOpDef).classesOp) separator ('and')]
-	Pattern![it.name/][if (classeOp.op = 'changeClass' or it.filter.op = 'deleteClass')][classeOp.oclAsType(ClassOpDef).classPar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (classeOp.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] 
+	[if (classeOp.op = 'changeClass' or it.filter.op = 'deleteClass')]Pattern![it.name/][classeOp.oclAsType(ClassOpDef).classPar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (classeOp.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] [/if]
 		[for (featureOp : FeatureOpDef | classeOp.oclAsType(ClassOpDef).featureOp) separator ('and')]
 			[if (featureOp.oclIsTypeOf(AttributeOpDef))]
 				[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty 
