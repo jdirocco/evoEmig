@@ -57,10 +57,7 @@ operation Any convert() {
 /////////////////////MIGRATION PART /////////////////////////////////// 
 
 operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
-if(Pattern!splitAttributeBNR2.isUndefined())
-	'cacchioNo'.println();
-	else Pattern!splitAttributeBNR2ChangedClassBNR2.updatedElement.println(); 
-return ( Pattern!splitAttributeBNR2.isUndefined()) and
+return (not Pattern!splitAttributeBNR2.isUndefined()) and
 	Pattern!splitAttributeBNR2ChangedClassBNR2.applicationElement = propCallExpOld.source.eType  and  
  1 = 1 and 1 = 1 and Pattern!splitAttributeBNR2DelAttribute.applicationElement = propCallExpOld.source.referredProperty 
 ;
@@ -88,7 +85,7 @@ rule splitAttributeBNR2
 	}	
 
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
-return Pattern!extractInlineMetaClassBNR1.isUndefined() and
+return (not Pattern!extractInlineMetaClassBNR1.isUndefined()) and
 	Pattern!extractInlineMetaClassBNR1ChangedClassBNR1.applicationElement = propCallExpOld.source.eType  and  
  Pattern!extractInlineMetaClassBNR1DeleteAttributeBNR1.applicationElement = propCallExpOld.source.referredProperty 
 and 1 = 1 and	1 = 1 and 1 = 1  and Pattern!extractInlineMetaClassBNR1addedClassBNR1 = Pattern!extractInlineMetaClassBNR1addReferenceBNR1.eType;
@@ -118,7 +115,7 @@ rule extractInlineMetaClassBNR1
 
 operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
 return 
-	Pattern!changeReferenceTypeBNR3.isUndefined() and Pattern!changeReferenceTypeBNR3ChangedClassBNR3.applicationElement = templateInvocationOld.source.eType  and  
+	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and Pattern!changeReferenceTypeBNR3ChangedClassBNR3.applicationElement = templateInvocationOld.source.eType  and  
  1 = 1 ;
 }
 rule changeReferenceTypeBNR3
