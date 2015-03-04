@@ -6,62 +6,7 @@
 [template public generateElement(aMigrationProgram : MigrationProgram)]
 [comment @main/]
 [file (aMigrationProgram.name + '.etl', false, 'UTF-8')]
-pre {
-	"Running ETL\n".println();
-	
-	// GLOBAL VARIABLES
-	
-	var DEBUG_MODE = false;
-	
-	// map <reference, referenced class attribute>
-	// a cache to don't ask the user the same question over and over again,
-	// used for replacing attributes that became references with
-	// an attribute of the referenced class.
-	var referenceReplacers = Map{};
-	
-	// map <attribute, replacer attribute>
-	// as above, but for replacing attributes that were deleted with
-	// an added attribute.
-	var deletedAttributeReplacers = Map{};
-	
-	// map <reference, TemplateInvocation replacer template>
-	// as above, but for replacing referred templates in template invocations
-	// when they became invalid since the reference changed type.
-	var templateReplacers = Map{};
-}
 
-post {
-	"\nRunning Successful".println();
-}
-
-operation Any debug() : Any {
-  if (DEBUG_MODE) {
-    return self.println();
-  }
-}
-
-// Custom equivalent function:
-// is recursive and returns the element itself if there is no matching rule for it.
-operation Any convert() {
-  
-  var equivalent;
-  
-  if (self.isKindOf(Collection)) {
-    // collection -> recursion
-    'Converting Collection '.concat(self.toString()).debug();
-    equivalent = self->collect( element | element.convert() );
-    'Converted: Collection '.concat(equivalent.toString()).debug();
-  } else {
-    // single element
-    equivalent = self.equivalent();
-    if (equivalent.isUndefined()) {
-      // no matching rule(s)
-      equivalent = self;
-    }
-  }
-
-  return equivalent;
-}
 /////////////////////MIGRATION PART /////////////////////////////////// 
 [for (it : Rule | aMigrationProgram.elements)]
 [generatePattern(it)/]
@@ -599,10 +544,10 @@ pattern [it.name/]
 			[cod.oclAsType(ClassOpDef).classPar.varName/] : Delta![if (cod.op = 'changeClass')]ChangedEClass[/if][if (cod.op = 'addClass')]AddedEClass[/if][if (cod.op = 'deleteClass')]DeletedEClass[/if][if (cod.oclAsType(ClassOpDef).featureOp->size()>0)], [/if]
 		[for (featureOp : FeatureOpDef | cod.oclAsType(ClassOpDef).featureOp) separator (',')]
 				[if (featureOp.oclIsTypeOf(AttributeOpDef))]
-					[featureOp.oclAsType(AttributeOpDef).attributePar.varName/] : Delta![if (featureOp.op = 'changeAttribute')]ChangeEAttribute[/if][if (featureOp.op = 'addAttribute')]addEAttribute[/if][if (featureOp.op = 'deleteAttribute')]DeleteEAttribute[/if]
+					[featureOp.oclAsType(AttributeOpDef).attributePar.varName/] : Delta![if (featureOp.op = 'changeAttribute')]ChangeEAttribute[/if][if (featureOp.op = 'addAttribute')]AddedEAttribute[/if][if (featureOp.op = 'deleteAttribute')]DeletedEAttribute[/if]
 				[/if]
 				[if (featureOp.oclIsTypeOf(ReferenceOpDef))]
-					[featureOp.oclAsType(ReferenceOpDef).referencePar.varName/] : Delta![if (featureOp.op = 'changeReference')]ChangeEReference[/if][if (featureOp.op = 'addReference')]addEReference[/if][if (featureOp.op = 'deleteReference')]DeleteEReference[/if]
+					[featureOp.oclAsType(ReferenceOpDef).referencePar.varName/] : Delta![if (featureOp.op = 'changeReference')]ChangeEReference[/if][if (featureOp.op = 'addReference')]AddedEReference[/if][if (featureOp.op = 'deleteReference')]DeletedEReference[/if]
 				[/if]	
 			[/for]
 		[/if]
@@ -625,33 +570,49 @@ pattern [it.name/]
 [/template]
 [template public generateGuard(it : Rule)]
 operation is_[it.name/] ([it.rewritingRules.left.varName/] : [it.eContainer().oclAsType(MigrationProgram).metamodels.name/]![it.rewritingRules.left.type.name/]) : Boolean {
- if ([it.name/].isUndefined()) return false;
-return  
 [if (it.filter.oclIsTypeOf(ClassOpDef))]
-	Pattern![it.name/][if (it.filter.op = 'changeClass' or it.filter.op = 'deleteClass')][it.filter.oclAsType(ClassOpDef).classPar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] 
-[for (featureOp : FeatureOpDef | it.filter.oclAsType(ClassOpDef).featureOp) separator ('and' )]
-		[if (featureOp.oclIsTypeOf(AttributeOpDef))]
-			[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty 
-		[else] 1 = 1 [/if]
-		[/if]
-		[if (featureOp.oclIsTypeOf(ReferenceOpDef))]
-			[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty
-		[else] 1 = 1 [/if]
-		[/if]	
+[if (it.filter.op = 'changeClass' or it.filter.op = 'deleteClass')]var [it.filter.oclAsType(ClassOpDef).classPar.varName/] = Delta![if (it.filter.op = 'changeClass')]ChangedEClass[/if][if (it.filter.op = 'deleteClass')]DeletedEClass[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][it.filter.oclAsType(ClassOpDef).classPar.varName/]))->first();[/if]
+[for (featureOp : FeatureOpDef | it.filter.oclAsType(ClassOpDef).featureOp)]
+[if (featureOp.oclIsTypeOf(AttributeOpDef))][if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')]var [featureOp.oclAsType(AttributeOpDef).attributePar.varName/] = Delta![if (featureOp.op = 'changeAttribute')]ChangedEAttribute[/if][if (featureOp.op = 'deleteAttribute')]DeletedEAttribute[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/]))->first();[/if][/if]
+[if (featureOp.oclIsTypeOf(ReferenceOpDef))][if (featureOp.op = 'changeReference' or featureOp.op = 'deleteReference')]var [featureOp.oclAsType(AttributeOpDef).attributePar.varName/] = Delta![if (featureOp.op = 'changeReference')]ChangedEReference[/if][if (featureOp.op = 'deleteReference')]DeletedReference[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/]))->first();[/if][/if]	
 	[/for]
 [/if]
 [if (it.filter.oclIsTypeOf(PackageOpDef))]
-	Pattern![it.name/][if (it.filter.op = 'changePackage' or it.filter.op = 'deletePackage')][it.filter.oclAsType(PackageOpDef).packagePar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(PackageOpDef).classesOp->size()>0)] and [/if]
+[if (it.filter.op = 'changePackage' or it.filter.op = 'deletePackage')]var [it.filter.oclAsType(PackageOpDef).packagePar.varName/][/if] = Delta![if (it.filter.op = 'changePackage')]ChangedEPackage[/if][if (it.filter.op = 'deletePackage')]DeletedEPackage[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][it.filter.oclAsType(PackageOpDef).packagePar.varName/]));
+	[for (classeOp : ClassOpDef | it.filter.oclAsType(PackageOpDef).classesOp)]
+[if (classeOp.op = 'changeClass' or it.filter.op = 'deleteClass')][if (classeOp.op = 'changeClass' or classeOp.op = 'deleteClass')]var [classeOp.oclAsType(ClassOpDef).classPar.varName/] = Delta![if (classeOp.op = 'changeClass')]ChangedEClass[/if][if (classeOp.op = 'deleteClass')]DeletedEClass[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][classeOp.oclAsType(ClassOpDef).classPar.varName/]))->first();[/if][/if]
+		[for (featureOp : FeatureOpDef | classeOp.oclAsType(ClassOpDef).featureOp)]
+			[if (featureOp.oclIsTypeOf(AttributeOpDef))]
+[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')]var [featureOp.oclAsType(AttributeOpDef).attributePar.varName/] = Delta![if (featureOp.op = 'changeAttribute')]ChangedEAttribute[/if][if (featureOp.op = 'deleteAttribute')]DeletedEAttribute[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/]))->first();[/if]				 
+			[/if]
+			[if (featureOp.oclIsTypeOf(ReferenceOpDef))]
+[if (featureOp.op = 'changeReference' or featureOp.op = 'deleteReference')]var [featureOp.oclAsType(AttributeOpDef).attributePar.varName/] = Delta![if (featureOp.op = 'changeReference')]ChangedEReference[/if][if (featureOp.op = 'deleteReference')]DeletedReference[/if].allInstances()->select(c | c.instanceOf(Pattern![it.name/][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/]))->first();[/if]
+			[/if]	
+		[/for]
+	[/for]
+[/if]
+
+ if (Pattern![it.name/].isUndefined()) return false;
+return  
+[if (it.filter.oclIsTypeOf(ClassOpDef))]
+[if (it.filter.op = 'changeClass' or it.filter.op = 'deleteClass')][it.filter.oclAsType(ClassOpDef).classPar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] 
+[for (featureOp : FeatureOpDef | it.filter.oclAsType(ClassOpDef).featureOp) separator ('and ' )]
+		[if (featureOp.oclIsTypeOf(AttributeOpDef))]
+			[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty[else] 1 = 1 [/if][/if]
+		[if (featureOp.oclIsTypeOf(ReferenceOpDef))]
+			[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty[else] 1 = 1 [/if][/if]	
+	[/for]
+[/if]
+[if (it.filter.oclIsTypeOf(PackageOpDef))]
+	[if (it.filter.op = 'changePackage' or it.filter.op = 'deletePackage')][it.filter.oclAsType(PackageOpDef).packagePar.varName/][/if].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (it.filter.oclAsType(PackageOpDef).classesOp->size()>0)] and [/if]
 	[for (classeOp : ClassOpDef | it.filter.oclAsType(PackageOpDef).classesOp) separator ('and')]
 	[if (classeOp.op = 'changeClass' or it.filter.op = 'deleteClass')]Pattern![it.name/][classeOp.oclAsType(ClassOpDef).classPar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.eType [if (classeOp.oclAsType(ClassOpDef).featureOp->size()>0)] and [/if] [/if]
 		[for (featureOp : FeatureOpDef | classeOp.oclAsType(ClassOpDef).featureOp) separator ('and')]
 			[if (featureOp.oclIsTypeOf(AttributeOpDef))]
-				[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty 
-			[else] 1 = 1 [/if]
+				[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')][featureOp.oclAsType(AttributeOpDef).attributePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty [else] 1 = 1 [/if]
 			[/if]
 			[if (featureOp.oclIsTypeOf(ReferenceOpDef))]
-				[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')] Pattern![it.name/][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty 
-			[else] 1 = 1 [/if]
+				[if (featureOp.op = 'changeAttribute' or featureOp.op = 'deleteAttribute')][it.name/][featureOp.oclAsType(ReferenceOpDef).referencePar.varName/].applicationElement = [it.rewritingRules.left.varName/].source.referredProperty [else] 1 = 1 [/if]
 			[/if]	
 		[/for]
 	[/for]

@@ -57,16 +57,21 @@ operation Any convert() {
 /////////////////////MIGRATION PART /////////////////////////////////// 
 
 operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
-return (not Pattern!splitAttributeBNR2.isUndefined()) and
-	Pattern!splitAttributeBNR2ChangedClassBNR2.applicationElement = propCallExpOld.source.eType  and  
- 1 = 1 and 1 = 1 and Pattern!splitAttributeBNR2DelAttribute.applicationElement = propCallExpOld.source.referredProperty 
-;
+	var  changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
+	var  delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
+	((not Pattern!splitAttributeBNR2.isUndefined()) and
+		changedClassBNR2.applicationElement.name = propCallExpOld.source.eType.name  and  
+	 1 = 1 and 1 = 1 and delAttribute.applicationElement.name = propCallExpOld.referredProperty.name).println();
+	return (not Pattern!splitAttributeBNR2.isUndefined()) and
+		changedClassBNR2.applicationElement.name = propCallExpOld.source.eType.name  and  
+	 1 = 1 and 1 = 1 and delAttribute.applicationElement.name = propCallExpOld.referredProperty.name 
+	;
 }
 rule splitAttributeBNR2
 	transform propCallExpOld : mtl!PropertyCallExp
-	to propCallExpNew : mtl!PropCallExp {
+	to propCallExpNew : evoMtl!PropCallExp {
 	guard: is_splitAttributeBNR2(propCallExpOld)
-				'ci sono'.println();
+				
 				ordered <- propCallExpOld.ordered.convert();	
 
 				var temp = System.user.choose(Choice, Sequence{Pattern!splitAttributeBNR2a1.convert(), Pattern!splitAttributeBNR2a2.convert()});
@@ -85,9 +90,14 @@ rule splitAttributeBNR2
 	}	
 
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
+
+var  changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
+var  changedClassBNR1 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedClassBNR1));
+var  deleteAttributeBNR1 = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1DeleteAttributeBNR1));
+
 return (not Pattern!extractInlineMetaClassBNR1.isUndefined()) and
-	Pattern!extractInlineMetaClassBNR1ChangedClassBNR1.applicationElement = propCallExpOld.source.eType  and  
- Pattern!extractInlineMetaClassBNR1DeleteAttributeBNR1.applicationElement = propCallExpOld.source.referredProperty 
+	changedClassBNR1.applicationElement = propCallExpOld.source.eType  and  
+ deleteAttributeBNR1.applicationElement = propCallExpOld.source.referredProperty 
 and 1 = 1 and	1 = 1 and 1 = 1  and Pattern!extractInlineMetaClassBNR1addedClassBNR1 = Pattern!extractInlineMetaClassBNR1addReferenceBNR1.eType;
 }
 rule extractInlineMetaClassBNR1
@@ -113,18 +123,19 @@ rule extractInlineMetaClassBNR1
 				markedPre <- propCallExpOld.markedPre.convert();	
 	}	
 
-operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
-return 
-	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and Pattern!changeReferenceTypeBNR3ChangedClassBNR3.applicationElement = templateInvocationOld.source.eType  and  
- 1 = 1 ;
-}
-rule changeReferenceTypeBNR3
-	transform templateInvocationOld : mtl!TemplateInvocation
-	to templateInvocationNew : mtl!TemplateInvocation {
-	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
-		
-				name <- templateInvocationOld.name.convert();	
-	}	
+--operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
+--var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
+--cc.applicationElement.println();
+--return 
+--	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
+-- 1 = 1 ;
+--}
+--rule changeReferenceTypeBNR3
+--	transform templateInvocationOld : mtl!TemplateInvocation
+--	to templateInvocationNew : mtl!TemplateInvocation {
+--	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
+--				name <- templateInvocationOld.name.convert();	
+--	}	
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
 // Updates everything to the evolved metamodel without doing any other change.
@@ -294,7 +305,7 @@ rule Block
 rule TemplateInvocation
   transform s : mtl!TemplateInvocation
   to t : mtl!TemplateInvocation {
-  guard : not is_changeReferenceTypeBNR3(s)
+--  guard : not is_changeReferenceTypeBNR3(s)
   	'Transforming TemplateInvocation'.debug();
   
     t.name = s.name;
