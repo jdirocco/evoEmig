@@ -59,26 +59,28 @@ operation Any convert() {
 operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
 	var  changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
 	var  delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
-	((not Pattern!splitAttributeBNR2.isUndefined()) and
-		changedClassBNR2.applicationElement.name = propCallExpOld.source.eType.name  and  
-	 1 = 1 and 1 = 1 and delAttribute.applicationElement.name = propCallExpOld.referredProperty.name).println();
 	return (not Pattern!splitAttributeBNR2.isUndefined()) and
 		changedClassBNR2.applicationElement.name = propCallExpOld.source.eType.name  and  
 	 1 = 1 and 1 = 1 and delAttribute.applicationElement.name = propCallExpOld.referredProperty.name 
 	;
 }
 rule splitAttributeBNR2
-	transform propCallExpOld : mtl!PropertyCallExp
-	to propCallExpNew : evoMtl!PropCallExp {
+	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
+	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
 	guard: is_splitAttributeBNR2(propCallExpOld)
-				
-				ordered <- propCallExpOld.ordered.convert();	
+	
+		var changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
+		var a1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A1))->first();
+		var a2 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A2))->first();
+		var delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
+				//TODO 
+				ordered <- propCallExpOld.ordered;	
 
-				var temp = System.user.choose(Choice, Sequence{Pattern!splitAttributeBNR2a1.convert(), Pattern!splitAttributeBNR2a2.convert()});
+				var temp = System.user.choose('Choice', Sequence{a1.convert(), a2.convert()});
 
-				eType <- temp.eType.convert();	
-				source <- temp.eContainingClass.convert();	
-				referredProprerty <- invalid.invalid.convert();	
+				eType <- temp.eType;	
+				source <- temp.eContainingClass;	
+				referredProprerty <- temp;	
 				unique <- propCallExpOld.unique.convert();	
 				lowerBound <- propCallExpOld.lowerBound.convert();	
 				upperBound <- propCallExpOld.upperBound.convert();	
@@ -87,7 +89,7 @@ rule splitAttributeBNR2
 				propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
 				propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
 				markedPre <- propCallExpOld.markedPre.convert();	
-	}	
+	}
 
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
 
@@ -100,10 +102,17 @@ return (not Pattern!extractInlineMetaClassBNR1.isUndefined()) and
  deleteAttributeBNR1.applicationElement = propCallExpOld.source.referredProperty 
 and 1 = 1 and	1 = 1 and 1 = 1  and Pattern!extractInlineMetaClassBNR1addedClassBNR1 = Pattern!extractInlineMetaClassBNR1addReferenceBNR1.eType;
 }
+//TODO
 rule extractInlineMetaClassBNR1
-	transform propCallExpOld : mtl!PropertyCallExp
-	to propCallExpNew : mtl!PropCallExp {
+	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
+	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
 	guard: is_extractInlineMetaClassBNR1(propCallExpOld)
+		var changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1changedPackageBNR1));
+		var changedClassBNR1 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1changedClassBNR1))->first();
+		var deleteAttributeBNR1 = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1deleteAttributeBNR1))->first();				 
+		var invalid = Delta!AddedEReference.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addReferenceBNR1))->first();
+		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addedAttribute1BNR1))->first();				 
+		var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addedAttribute2BNR1))->first();				 
 		
 				name <- propCallExpOld.name.convert();	
 
@@ -121,28 +130,28 @@ rule extractInlineMetaClassBNR1
 				propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
 				propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
 				markedPre <- propCallExpOld.markedPre.convert();	
+	}
+//TODO
+operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
+var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
+cc.applicationElement.println();
+return 
+	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
+ 1 = 1 ;
+}
+rule changeReferenceTypeBNR3
+	transform templateInvocationOld : mtl!TemplateInvocation
+	to templateInvocationNew : mtl!TemplateInvocation {
+	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
+				name <- templateInvocationOld.name.convert();	
 	}	
-
---operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
---var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
---cc.applicationElement.println();
---return 
---	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
--- 1 = 1 ;
---}
---rule changeReferenceTypeBNR3
---	transform templateInvocationOld : mtl!TemplateInvocation
---	to templateInvocationNew : mtl!TemplateInvocation {
---	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
---				name <- templateInvocationOld.name.convert();	
---	}	
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
 // Updates everything to the evolved metamodel without doing any other change.
 
 rule Module
   transform s : mtl!Module
-  to t : mtl!Module {
+  to t : evoMtl!Module {
   	'Transforming Module'.debug();
   	
 	t.name = 'juri';
@@ -167,7 +176,7 @@ rule Module
  
 rule TypedModel
   transform s : mtl!TypedModel
-  to t : mtl!TypedModel {
+  to t : evoMtl!TypedModel {
   	'Transforming TypedModel'.debug();
 
     t.takesTypesFrom = s.takesTypesFrom.convert(); // contains the main metamodel EPackage
@@ -177,7 +186,7 @@ rule TypedModel
 
 rule Template
   transform s : mtl!Template
-  to t : mtl!Template {
+  to t : evoMtl!Template {
   	'Transforming Template'.debug();
   
     t.name = s.name;
@@ -207,7 +216,7 @@ rule Template
   
 rule FileBlock
   transform s : mtl!FileBlock
-  to t : mtl!FileBlock {
+  to t : evoMtl!FileBlock {
   	'Transforming FileBlock'.debug();
   
     t.name = s.name;
@@ -233,7 +242,7 @@ rule FileBlock
   
 rule ForBlock
   transform s : mtl!ForBlock
-  to t : mtl!ForBlock {
+  to t : evoMtl!ForBlock {
   	'Transforming ForBlock'.debug();
 
     t.name = s.name;
@@ -261,7 +270,7 @@ rule ForBlock
   
 rule IfBlock
   transform s : mtl!IfBlock
-  to t : mtl!IfBlock {
+  to t : evoMtl!IfBlock {
     'Transforming IfBlock'.debug();
     
     t.name = s.name;
@@ -284,7 +293,7 @@ rule IfBlock
   
 rule Block
   transform s : mtl!Block
-  to t : mtl!Block {
+  to t : evoMtl!Block {
     'Transforming Block'.debug();
     
     t.name = s.name;
@@ -304,7 +313,7 @@ rule Block
   
 rule TemplateInvocation
   transform s : mtl!TemplateInvocation
-  to t : mtl!TemplateInvocation {
+  to t : evoMtl!TemplateInvocation {
 --  guard : not is_changeReferenceTypeBNR3(s)
   	'Transforming TemplateInvocation'.debug();
   
@@ -332,7 +341,7 @@ rule TemplateInvocation
 // ArrayStoreException and cast errors when copying the transformed object in the parent.
 rule StringLiteralExp
   transform s : mtl!ocl::ecore::StringLiteralExp
-  to t : mtl!ocl::ecore::StringLiteralExp {   
+  to t : evoMtl!ocl::ecore::StringLiteralExp {   
   	'Transforming StringLiteralExp'.debug();
   
     t.startPosition = s.startPosition;
@@ -346,8 +355,11 @@ rule StringLiteralExp
   
 rule PropertyCallExp
   transform s : mtl!ocl::ecore::PropertyCallExp
-  to t : mtl!ocl::ecore::PropertyCallExp {
-  guard : not is_extractInlineMetaClassBNR1(s) and not is_splitAttributeBNR2(s)
+  to t : evoMtl!ocl::ecore::PropertyCallExp {
+  guard : not (is_extractInlineMetaClassBNR1(s) or is_splitAttributeBNR2(s))
+    s.println();
+    s.eType.println();
+    s.ordered.println();
     'Transforming PropertyCallExp'.debug();
     
     t.name = s.name;
@@ -372,7 +384,7 @@ rule PropertyCallExp
   
 rule OperationCallExp
   transform s : mtl!ocl::ecore::OperationCallExp
-  to t : mtl!ocl::ecore::OperationCallExp {
+  to t : evoMtl!ocl::ecore::OperationCallExp {
   	'Transforming OperationCallExp'.debug();
   
     t.startPosition = s.startPosition;
@@ -392,7 +404,7 @@ rule OperationCallExp
   
 rule TypeExp
   transform s : mtl!ocl::ecore::TypeExp
-  to t : mtl!ocl::ecore::TypeExp {
+  to t : evoMtl!ocl::ecore::TypeExp {
     'Transforming TypeExp'.debug();
     
     t.name = s.name;
@@ -413,7 +425,7 @@ rule TypeExp
 
 rule VariableExp
   transform s : mtl!ocl::ecore::VariableExp
-  to t : mtl!ocl::ecore::VariableExp {
+  to t : evoMtl!ocl::ecore::VariableExp {
     'Transforming VariableExp'.debug();
     
 	t.name = s.name;
@@ -434,7 +446,7 @@ rule VariableExp
 
 rule Variable
   transform s : mtl!ocl::ecore::Variable
-  to t : mtl!ocl::ecore::Variable {
+  to t : evoMtl!ocl::ecore::Variable {
     'Transforming Variable'.debug();
     
     t.name = s.name;
@@ -456,7 +468,7 @@ rule Variable
   
 rule SetType
   transform s : mtl!ocl::ecore::SetType
-  to t : mtl!ocl::ecore::SetType {
+  to t : evoMtl!ocl::ecore::SetType {
     'Transforming SetType'.debug();
 
     t.name = s.name;
@@ -478,7 +490,7 @@ rule SetType
 
 rule OrderedSetType
   transform s : mtl!ocl::ecore::OrderedSetType
-  to t : mtl!ocl::ecore::OrderedSetType {
+  to t : evoMtl!ocl::ecore::OrderedSetType {
     'Transforming OrderedSetType'.debug();
     
     t.name = s.name;
@@ -500,7 +512,7 @@ rule OrderedSetType
   
 rule CollectionLiteralExp
   transform s : mtl!ocl::ecore::CollectionLiteralExp
-  to t : mtl!ocl::ecore::CollectionLiteralExp {
+  to t : evoMtl!ocl::ecore::CollectionLiteralExp {
     'Transforming CollectionLiteralExp'.debug();
     
     t.name = s.name;
@@ -524,7 +536,7 @@ rule CollectionLiteralExp
   
 rule CollectionItem
   transform s : mtl!ocl::ecore::CollectionItem
-  to t : mtl!ocl::ecore::CollectionItem {
+  to t : evoMtl!ocl::ecore::CollectionItem {
     'Transforming CollectionItem'.debug();
     
     t.name = s.name;

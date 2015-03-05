@@ -14,11 +14,11 @@ and			changedClassBNR2.eStructuralFeatures.includes(delAttribute)
 pattern extractInlineMetaClassBNR1
 	changedPackageBNR1 : Delta!ChangedEPackage, 
 			changedClassBNR1 : Delta!ChangedEClass, 
-					deleteAttributeBNR1 : Delta!DeleteEAttribute
-,					addReferenceBNR1 : Delta!addEReference
+					deleteAttributeBNR1 : Delta!DeletedEAttribute
+,					addReferenceBNR1 : Delta!AddedEReference
 ,			addedClassBNR1 : Delta!AddedEClass, 
-					addedAttribute1BNR1 : Delta!addEAttribute
-,					addedAttribute2BNR1 : Delta!addEAttribute
+					addedAttribute1BNR1 : Delta!AddedEAttribute
+,					addedAttribute2BNR1 : Delta!AddedEAttribute
 {
 	match : 
 		changedPackageBNR1.eClassifiers.includes(changedClassBNR1)and 
