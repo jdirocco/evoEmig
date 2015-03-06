@@ -66,31 +66,30 @@ operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean
 }
 rule splitAttributeBNR2
 	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
-	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
+	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp{
 	guard: is_splitAttributeBNR2(propCallExpOld)
-	
 		var changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
 		var a1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A1))->first();
 		var a2 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A2))->first();
 		var delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
 				//TODO 
-				ordered <- propCallExpOld.ordered;	
-
+				propCallExpNew.ordered <- propCallExpOld.ordered;	
 				var temp = System.user.choose('Choice', Sequence{a1.convert(), a2.convert()});
-
-				eType <- temp.eType;	
-				source <- temp.eContainingClass;	
-				referredProprerty <- temp;	
-				unique <- propCallExpOld.unique.convert();	
-				lowerBound <- propCallExpOld.lowerBound.convert();	
-				upperBound <- propCallExpOld.upperBound.convert();	
-				startPosition <- propCallExpOld.startPosition.convert();	
-				endPosition <- propCallExpOld.endPosition.convert();	
-				propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
-				propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
-				markedPre <- propCallExpOld.markedPre.convert();	
+				'==========JURI======'.println();
+				temp.println();
+				
+				/*propCallExpNew.eType <- temp.eType;	
+				propCallExpNew.source <- temp.eContainingClass;	
+				propCallExpNew.referredProprerty <- temp;*/	
+				propCallExpNew.unique <- propCallExpOld.unique;	
+				propCallExpNew.lowerBound <- propCallExpOld.lowerBound;	
+				propCallExpNew.upperBound <- propCallExpOld.upperBound;	
+				propCallExpNew.startPosition <- 1;	
+				propCallExpNew.endPosition <- propCallExpOld.endPosition;	
+				propCallExpNew.propertyStartPosition <- propCallExpOld.propertyStartPosition;	
+				propCallExpNew.propertyEndPosition <- propCallExpOld.propertyEndPosition;	
+				propCallExpNew.markedPre <- propCallExpOld.markedPre;
 	}
-
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
 
 var  changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
@@ -103,7 +102,7 @@ return (not Pattern!extractInlineMetaClassBNR1.isUndefined()) and
 and 1 = 1 and	1 = 1 and 1 = 1  and Pattern!extractInlineMetaClassBNR1addedClassBNR1 = Pattern!extractInlineMetaClassBNR1addReferenceBNR1.eType;
 }
 //TODO
-rule extractInlineMetaClassBNR1
+/*rule extractInlineMetaClassBNR1
 	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
 	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
 	guard: is_extractInlineMetaClassBNR1(propCallExpOld)
@@ -131,20 +130,20 @@ rule extractInlineMetaClassBNR1
 				propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
 				markedPre <- propCallExpOld.markedPre.convert();	
 	}
-//TODO
+//TODO*/
 operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
 var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
 cc.applicationElement.println();
 return 
 	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
  1 = 1 ;
-}
+}/*
 rule changeReferenceTypeBNR3
 	transform templateInvocationOld : mtl!TemplateInvocation
 	to templateInvocationNew : mtl!TemplateInvocation {
 	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
 				name <- templateInvocationOld.name.convert();	
-	}	
+	}*/	
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
 // Updates everything to the evolved metamodel without doing any other change.
@@ -154,7 +153,7 @@ rule Module
   to t : evoMtl!Module {
   	'Transforming Module'.debug();
   	
-	t.name = 'juri';
+	t.name = s.name;
 	t.nsURI = s.nsURI;
 	t.nsPrefix = s.nsPrefix;
 	t.deprecated = s.deprecated;
@@ -357,11 +356,7 @@ rule PropertyCallExp
   transform s : mtl!ocl::ecore::PropertyCallExp
   to t : evoMtl!ocl::ecore::PropertyCallExp {
   guard : not (is_extractInlineMetaClassBNR1(s) or is_splitAttributeBNR2(s))
-    s.println();
-    s.eType.println();
-    s.ordered.println();
     'Transforming PropertyCallExp'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -584,17 +579,18 @@ operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : mtl!ocl::ec
   // (self is the PropertyCallExp referredProperty)
   
   'Converting EAttribute '.concat(self.name).debug();
-  
   // get EAttribute evolved parent EClass
-  var parentClass = s.source.eType;
+  /*var parentClass = s.source.eType;
+  var currentAttribute = s.referredProperty; 
   var evoParentClass = parentClass.convert();
-  
   // get the evolved attribute from the evolved class.
   // Note: the attribute could be in a super class, so we use eAllAttributes to get also super class attributes.
-  var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
-  
+  var evoAttribute =evoParentClass.eAllAttributes->select(e|e.name = currentAttribute.name)->first();
   'Converted: EAttribute '.concat(self.name).debug();
-
+  return evoAttribute;*/
+  var parentClass = self.eContainingClass;
+  var evoParentClass = parentClass.convert();
+  var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoReference | evoReference.name == self.name);
   return evoAttribute;
 }
 
@@ -603,7 +599,7 @@ operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : mtl!ocl::ec
 operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : mtl!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EReference {
   // (self is the PropertyCallExp referredProperty)
   
-  'Converting EReference '.concat(self.name).debug();
+  /*'Converting EReference '.concat(self.name).debug();
   
   // get EReference evolved parent EClass
   var parentClass = s.source.eType;
@@ -615,6 +611,10 @@ operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : mtl!ocl::ec
   
   'Converted: EReference '.concat(self.name).debug();
   
+  return evoReference;*/
+  var parentClass = self.eContainingClass;
+  var evoParentClass = parentClass.convert();
+  var evoReference = evoParentClass.eAllReferences->selectOne(evoReference | evoReference.name == self.name);
   return evoReference;
 }
 
