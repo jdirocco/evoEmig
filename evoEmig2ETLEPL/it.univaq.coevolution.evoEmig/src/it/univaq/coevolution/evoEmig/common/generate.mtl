@@ -74,7 +74,7 @@ rule [it.name/]
 		[generateVariable(it)/]
 		[for (bind : Binding | it2.right.binding)]
 			[if (bind.oclIsTypeOf(OclBinding))]
-				[bind.oclAsType(OclBinding).property/] <- [bind.oclAsType(OclBinding).expr.oclAsType(PropertyCallExp).source.oclAsType(VariableExp).referredVariable.varName/].[bind.oclAsType(OclBinding).expr.oclAsType(PropertyCallExp).calls.oclAsType(NavigationOrAttributeCall).name/].convert();	
+				[it2.right.varName/].[bind.oclAsType(OclBinding).property/] <- [bind.oclAsType(OclBinding).expr.oclAsType(PropertyCallExp).source.oclAsType(VariableExp).referredVariable.varName/].[bind.oclAsType(OclBinding).expr.oclAsType(PropertyCallExp).calls.oclAsType(NavigationOrAttributeCall).name/].convert();	
 			[/if]
 			[if (bind.oclIsTypeOf(DynamicBinding))]
 

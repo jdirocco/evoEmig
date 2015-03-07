@@ -1,4 +1,3 @@
-
 pattern splitAttributeBNR2
 	changedClassBNR2 : Delta!ChangedEClass, 
 			a1 : Delta!AddedEAttribute
