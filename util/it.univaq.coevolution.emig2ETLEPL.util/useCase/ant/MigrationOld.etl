@@ -57,8 +57,8 @@ operation Any convert() {
 /////////////////////MIGRATION PART /////////////////////////////////// 
 
 operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
-	var  changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
-	var  delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
+	var  changedClassBNR2 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2));
+	var  delAttribute = Delta!DeletedEAttribute.allInstances()->selectOne(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute));
 	return (not Pattern!splitAttributeBNR2.isUndefined()) and
 		changedClassBNR2.applicationElement.name = propCallExpOld.source.eType.name  and  
 	 1 = 1 and 1 = 1 and delAttribute.applicationElement.name = propCallExpOld.referredProperty.name 
@@ -68,17 +68,15 @@ rule splitAttributeBNR2
 	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
 	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp{
 	guard: is_splitAttributeBNR2(propCallExpOld)
-		var changedClassBNR2 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2))->first();
-		var a1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A1))->first();
-		var a2 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A2))->first();
-		var delAttribute = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute))->first();
-				//TODO 
+		var a1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A1))->at(0);
+		var a2 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A2))->at(1);
+
 				propCallExpNew.ordered <- propCallExpOld.ordered;	
 				var temp = System.user.choose('Choice', Sequence{a1.convert(), a2.convert()});
-				temp.println();
 				propCallExpNew.eType <- temp.eType;	
 				propCallExpNew.source <- temp.eContainingClass;	
 				propCallExpNew.referredProperty <- temp;
+				
 				propCallExpNew.unique <- propCallExpOld.unique;	
 				propCallExpNew.lowerBound <- propCallExpOld.lowerBound;	
 				propCallExpNew.upperBound <- propCallExpOld.upperBound;	
@@ -90,48 +88,45 @@ rule splitAttributeBNR2
 	}
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
 
-var  changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
-var  changedClassBNR1 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedClassBNR1));
-var  deleteAttributeBNR1 = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1DeleteAttributeBNR1));
-
+var changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
+var changedClassBNR1 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedClassBNR1));
+var deleteAttributeBNR1 = Delta!DeletedEAttribute.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1DeleteAttributeBNR1));
+var addReferenceBNR1 = Delta!AddedEReference.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddReferenceBNR1));
+var addedClassBNR1 = Delta!AddedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedClassBNR1));
+var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute1BNR1));				 
+var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute2BNR1));
 return (not Pattern!extractInlineMetaClassBNR1.isUndefined()) and
-	changedClassBNR1.applicationElement = propCallExpOld.source.eType  and  
- deleteAttributeBNR1.applicationElement = propCallExpOld.source.referredProperty 
-and 1 = 1 and	1 = 1 and 1 = 1  and Pattern!extractInlineMetaClassBNR1addedClassBNR1 = Pattern!extractInlineMetaClassBNR1addReferenceBNR1.eType;
+	changedClassBNR1.applicationElement.name = propCallExpOld.source.eType.name  and  
+ deleteAttributeBNR1.applicationElement.name = propCallExpOld.referredProperty.name 
+and 1 = 1 and	1 = 1 and 1 = 1  and addedClassBNR1.name = addReferenceBNR1.eType.name and addReferenceBNR1.name = deleteAttributeBNR1.name;
 }
 //TODO
-/*rule extractInlineMetaClassBNR1
+rule extractInlineMetaClassBNR1
 	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
 	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
 	guard: is_extractInlineMetaClassBNR1(propCallExpOld)
-		var changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1changedPackageBNR1));
-		var changedClassBNR1 = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1changedClassBNR1))->first();
-		var deleteAttributeBNR1 = Delta!DeletedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1deleteAttributeBNR1))->first();				 
-		var invalid = Delta!AddedEReference.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addReferenceBNR1))->first();
-		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addedAttribute1BNR1))->first();				 
-		var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1addedAttribute2BNR1))->first();				 
-		
-				name <- propCallExpOld.name.convert();	
+		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute1BNR1))->first();				 
+		var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute2BNR1))->at(1);				 
+				propCallExpNew.name <- propCallExpOld.name.convert();	
 
-				var tempBNR1 = System.user.choose(Choice, Sequence{Pattern!extractInlineMetaClassBNR1addedAttribute1BNR1.convert(), Pattern!extractInlineMetaClassBNR1addedAttribute2BNR1.convert()});
-
-				eType <- tempBNR1.eType.convert();	
-				source <- tempBNR1.eContainingClass.convert();	
-				referredProperty <- invalid.invalid.convert();	
-				ordered <- propCallExpOld.ordered.convert();	
-				unique <- propCallExpOld.unique.convert();	
-				lowerBound <- propCallExpOld.lowerBound.convert();	
-				upperBound <- propCallExpOld.upperBound.convert();	
-				startPosition <- propCallExpOld.startPosition.convert();	
-				endPosition <- propCallExpOld.endPosition.convert();	
-				propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
-				propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
-				markedPre <- propCallExpOld.markedPre.convert();	
+				var tempBNR1 = System.user.choose('Choice', Sequence{addedAttribute1BNR1.convert(), addedAttribute2BNR1.convert()});
+				propCallExpNew.eType <- tempBNR1.eType;	
+				propCallExpNew.source <- tempBNR1.eContainingClass;	
+				
+				propCallExpNew.referredProperty <- tempBNR1;	
+				propCallExpNew.ordered <- propCallExpOld.ordered.convert();	
+				propCallExpNew.unique <- propCallExpOld.unique.convert();	
+				propCallExpNew.lowerBound <- propCallExpOld.lowerBound.convert();	
+				propCallExpNew.upperBound <- propCallExpOld.upperBound.convert();	
+				propCallExpNew.startPosition <- propCallExpOld.startPosition.convert();	
+				propCallExpNew.endPosition <- propCallExpOld.endPosition.convert();	
+				propCallExpNew.propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
+				propCallExpNew.propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
+				propCallExpNew.markedPre <- propCallExpOld.markedPre.convert();	
 	}
-//TODO*/
+//TODO
 operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
 var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
-cc.applicationElement.println();
 return 
 	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
  1 = 1 ;
@@ -544,10 +539,18 @@ operation Metamodel!ecore::EAttribute convert() : evoMetamodel!ecore::EAttribute
 operation Delta!AddedEAttribute convert() : evoMetamodel!ecore::EAttribute {
   // (self is the PropertyCallExp referredProperty)  
   'Converting EAttribute '.concat(self.name).debug();
-  var parentClass = self.eContainingClass.applicationElement;
+  var parentClass = self.eContainingClass;
+  if(self.eContainingClass.isTypeOf(Delta!ChangedEClass))
+  	parentClass = self.eContainingClass.applicationElement;
   var evoParentClass = parentClass.convert();
   var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
   return evoAttribute;
+}
+operation Delta!AddedEClass convert() : evoMetamodel!ecore::EClass {
+  // (self is the PropertyCallExp referredProperty)  
+  'Converting EAttribute '.concat(self.name).debug();
+  var evoParentClass = evoMetamodel!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);
+  return evoParentClass;
 }
 // EReference is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.

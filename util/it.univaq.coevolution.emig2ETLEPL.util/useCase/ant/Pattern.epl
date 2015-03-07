@@ -8,6 +8,7 @@ pattern splitAttributeBNR2
 			changedClassBNR2.eStructuralFeatures.includes(a1)
 and			changedClassBNR2.eStructuralFeatures.includes(a2)
 and			changedClassBNR2.eStructuralFeatures.includes(delAttribute)
+and 		not(a1 = a2)
 
 	onmatch {
 			var message : String;
@@ -28,12 +29,13 @@ pattern extractInlineMetaClassBNR1
 ,					addedAttribute2BNR1 : Delta!AddedEAttribute
 {
 	match : 
-		changedPackageBNR1.eClassifiers.includes(changedClassBNR1) and 
-					changedClassBNR1.eStructuralFeatures.includes(deleteAttributeBNR1)
-and					changedClassBNR1.eStructuralFeatures.includes(addReferenceBNR1)
-and		changedPackageBNR1.eClassifiers.includes(addedClassBNR1) and 
-					addedClassBNR1.eStructuralFeatures.includes(addedAttribute1BNR1)
-and					addedClassBNR1.eStructuralFeatures.includes(addedAttribute2BNR1)
+		changedPackageBNR1.eClassifiers.includes(changedClassBNR1) 
+and			changedClassBNR1.eStructuralFeatures.includes(deleteAttributeBNR1)
+and			changedClassBNR1.eStructuralFeatures.includes(addReferenceBNR1)
+and		changedPackageBNR1.eClassifiers.includes(addedClassBNR1) 
+and			addedClassBNR1.eStructuralFeatures.includes(addedAttribute1BNR1)
+and			addedClassBNR1.eStructuralFeatures.includes(addedAttribute2BNR1)
+and		not(addedAttribute1BNR1 = addedAttribute2BNR1)
 
 	onmatch {
 			var message : String;

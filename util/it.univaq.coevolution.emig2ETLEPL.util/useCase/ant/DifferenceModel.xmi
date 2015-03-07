@@ -25,7 +25,7 @@
           name="style"
           eType="//@differenceElements.1/@eClassifiers.3"/>
       <applicationElement
-          href="Webapp.ecore#//WebApp/templates/@eGenericType"/>
+          href="Webapp.ecore#//Template"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecoreDiff:ChangedEClass"
@@ -79,13 +79,15 @@
         name="Style">
       <eStructuralFeatures
           xsi:type="ecoreDiff:AddedEAttribute"
-          name="src">
+          name="src"
+          eContainingClass="//@differenceElements.0/@eClassifiers.3">
         <eType
             href="Webapp.ecore#//NamedElement/name/@eGenericType"/>
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecoreDiff:AddedEAttribute"
-          name="href">
+          name="href"
+          eContainingClass="//@differenceElements.1/@eClassifiers.3">
         <eType
             href="Webapp.ecore#//NamedElement/name/@eGenericType"/>
       </eStructuralFeatures>
