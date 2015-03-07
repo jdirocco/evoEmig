@@ -75,12 +75,10 @@ rule splitAttributeBNR2
 				//TODO 
 				propCallExpNew.ordered <- propCallExpOld.ordered;	
 				var temp = System.user.choose('Choice', Sequence{a1.convert(), a2.convert()});
-				'==========JURI======'.println();
 				temp.println();
-				
-				/*propCallExpNew.eType <- temp.eType;	
+				propCallExpNew.eType <- temp.eType;	
 				propCallExpNew.source <- temp.eContainingClass;	
-				propCallExpNew.referredProprerty <- temp;*/	
+				propCallExpNew.referredProperty <- temp;
 				propCallExpNew.unique <- propCallExpOld.unique;	
 				propCallExpNew.lowerBound <- propCallExpOld.lowerBound;	
 				propCallExpNew.upperBound <- propCallExpOld.upperBound;	
@@ -152,7 +150,6 @@ rule Module
   transform s : mtl!Module
   to t : evoMtl!Module {
   	'Transforming Module'.debug();
-  	
 	t.name = s.name;
 	t.nsURI = s.nsURI;
 	t.nsPrefix = s.nsPrefix;
@@ -161,7 +158,6 @@ rule Module
 	t.endHeaderPosition = s.endHeaderPosition;
 	t.eFactoryInstance = s.eFactoryInstance;
 	t.documentation = s.documentation;
-	
 	t.eAnnotations = s.eAnnotations.convert();
 	t.eClassifiers = s.eClassifiers.convert();
 	t.eSubpackages = s.eSubpackages.convert();
@@ -270,8 +266,7 @@ rule ForBlock
 rule IfBlock
   transform s : mtl!IfBlock
   to t : evoMtl!IfBlock {
-    'Transforming IfBlock'.debug();
-    
+    'Transforming IfBlock'.debug(); 
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -281,7 +276,6 @@ rule IfBlock
     //t.required = s.required; // Internal error: java.lang.NullPointerException
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
-    
     t.body = s.body.convert();
     t.ifExpr = s.ifExpr.convert();
     t.`else` = s.`else`.convert();
@@ -294,7 +288,6 @@ rule Block
   transform s : mtl!Block
   to t : evoMtl!Block {
     'Transforming Block'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -304,9 +297,7 @@ rule Block
     //t.required = s.required; // Internal error: java.lang.NullPointerException
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
-    
     t.body = s.body.convert();
-  
     'Transformed: Block'.debug();
   }
   
@@ -315,7 +306,6 @@ rule TemplateInvocation
   to t : evoMtl!TemplateInvocation {
 --  guard : not is_changeReferenceTypeBNR3(s)
   	'Transforming TemplateInvocation'.debug();
-  
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -326,11 +316,9 @@ rule TemplateInvocation
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
     t.super = s.super;
-    
     t.argument = s.argument.convert();
     t.definition = s.definition.convert();
     t.eType = s.eType.convert();
-    
     'Transformed: TemplateInvocation'.debug();
   }
   
@@ -342,13 +330,10 @@ rule StringLiteralExp
   transform s : mtl!ocl::ecore::StringLiteralExp
   to t : evoMtl!ocl::ecore::StringLiteralExp {   
   	'Transforming StringLiteralExp'.debug();
-  
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
     t.stringSymbol = s.stringSymbol;
-    
     t.eType = s.eType.convert();
-    
     'Transformed: StringLiteralExp'.debug();
   }
   
@@ -369,11 +354,9 @@ rule PropertyCallExp
     t.propertyStartPosition = s.propertyStartPosition;
     t.propertyEndPosition = s.propertyEndPosition;
     t.markedPre = s.markedPre;
-    
     t.eType = s.eType.convert();
     t.source = s.source.convert();
-    t.referredProperty = s.referredProperty.convertFromPropertyCallExp(s);
-    
+    t.referredProperty = s.referredProperty.convert();
     'Transformed: PropertyCallExp'.debug();
   }
   
@@ -381,19 +364,16 @@ rule OperationCallExp
   transform s : mtl!ocl::ecore::OperationCallExp
   to t : evoMtl!ocl::ecore::OperationCallExp {
   	'Transforming OperationCallExp'.debug();
-  
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
     t.propertyStartPosition = s.propertyStartPosition;
     t.markedPre = s.markedPre;
     t.operationCode = s.operationCode;
     t.propertyEndPosition = s.propertyEndPosition;
-    
     t.source = s.source.convert();
     t.argument = s.argument.convert();
     t.eType = s.eType.convert();
     t.referredOperation = s.referredOperation.convert();
-    
     'Transformed: OperationCallExp'.debug();
   }
   
@@ -401,7 +381,6 @@ rule TypeExp
   transform s : mtl!ocl::ecore::TypeExp
   to t : evoMtl!ocl::ecore::TypeExp {
     'Transforming TypeExp'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -411,10 +390,8 @@ rule TypeExp
     //t.required = s.required; // as above
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
-    
     t.eType = s.eType.convert();
     t.referredType = s.referredType.convert();
-    
     'Transformed: TypeExp'.debug();
   }
 
@@ -422,7 +399,6 @@ rule VariableExp
   transform s : mtl!ocl::ecore::VariableExp
   to t : evoMtl!ocl::ecore::VariableExp {
     'Transforming VariableExp'.debug();
-    
 	t.name = s.name;
 	t.ordered = s.ordered;
 	t.unique = s.unique;
@@ -443,7 +419,6 @@ rule Variable
   transform s : mtl!ocl::ecore::Variable
   to t : evoMtl!ocl::ecore::Variable {
     'Transforming Variable'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -455,9 +430,7 @@ rule Variable
     t.endPosition = s.endPosition;
     t.typeStartPosition = s.typeStartPosition;
     t.typeEndPosition = s.typeEndPosition;
-    
     t.eType = s.eType.convert();
-  
     'Transformed: Variable'.debug();
   }
   
@@ -465,7 +438,6 @@ rule SetType
   transform s : mtl!ocl::ecore::SetType
   to t : evoMtl!ocl::ecore::SetType {
     'Transforming SetType'.debug();
-
     t.name = s.name;
     t.instanceClassName = s.instanceClassName;
     //t.instanceClass = s.instanceClass; // Internal error: java.lang.NullPointerException
@@ -487,7 +459,6 @@ rule OrderedSetType
   transform s : mtl!ocl::ecore::OrderedSetType
   to t : evoMtl!ocl::ecore::OrderedSetType {
     'Transforming OrderedSetType'.debug();
-    
     t.name = s.name;
     t.instanceClassName = s.instanceClassName;
     //t.instanceClass = s.instanceClass; // Internal error: java.lang.NullPointerException
@@ -499,9 +470,7 @@ rule OrderedSetType
     t.typeStartPosition = s.typeStartPosition;
     t.typeEndPosition = s.typeEndPosition;
     //t.kind = s.kind; // Internal error: java.lang.NullPointerException
-    
     t.elementType = s.elementType.convert();
-  
     'Transformed: OrderedSetType'.debug();
   }
   
@@ -509,7 +478,6 @@ rule CollectionLiteralExp
   transform s : mtl!ocl::ecore::CollectionLiteralExp
   to t : evoMtl!ocl::ecore::CollectionLiteralExp {
     'Transforming CollectionLiteralExp'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -521,7 +489,6 @@ rule CollectionLiteralExp
     t.endPosition = s.endPosition;
     t.kind = s.kind;
     //t.simpleRange = s.simpleRange; // Internal error: java.lang.NullPointerException
-    
     t.eType = s.eType.convert();
     t.eAnnotations = s.eAnnotations.convert();
     t.part = s.part.convert(); // TODO: CollectionItem
@@ -533,7 +500,6 @@ rule CollectionItem
   transform s : mtl!ocl::ecore::CollectionItem
   to t : evoMtl!ocl::ecore::CollectionItem {
     'Transforming CollectionItem'.debug();
-    
     t.name = s.name;
     t.ordered = s.ordered;
     t.unique = s.unique;
@@ -541,10 +507,8 @@ rule CollectionItem
     t.upperBound = s.upperBound;
     //t.many = s.many; // Internal error: java.lang.NullPointerException
     //t.required = s.required; // Internal error: java.lang.NullPointerException
-    
     t.eType = s.eType.convert();
     t.item = s.item.convert();
-    
     'Transformed: CollectionItem'.debug();
   }
   
@@ -553,65 +517,42 @@ rule CollectionItem
 
 operation Metamodel!ecore::EPackage convert() : evoMetamodel!ecore::EPackage {
   'Converting EPackage '.concat(self.name).debug();
-
   // get the relative package from the evolved metamodel
   var evoPackage = evoMetamodel!ecore::EPackage.allInstances()->selectOne(package | package.name == self.name);  
-
   'Converted: EPackage '.concat(self.name).debug();
-
   return evoPackage;
 }
 
 operation Metamodel!ecore::EClass convert() : evoMetamodel!ecore::EClass {
   'Converting EClass '.concat(self.name).debug();
-
   // get the relative class from the evolved metamodel
   var evoClass = evoMetamodel!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);  
-
   'Converted: EClass '.concat(self.name).debug();
-
   return evoClass;
 }
 
 // EAttribute is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EAttribute convertFromPropertyCallExp(s : mtl!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EAttribute {
-  // (self is the PropertyCallExp referredProperty)
-  
+operation Metamodel!ecore::EAttribute convert() : evoMetamodel!ecore::EAttribute {
+  // (self is the PropertyCallExp referredProperty)  
   'Converting EAttribute '.concat(self.name).debug();
-  // get EAttribute evolved parent EClass
-  /*var parentClass = s.source.eType;
-  var currentAttribute = s.referredProperty; 
-  var evoParentClass = parentClass.convert();
-  // get the evolved attribute from the evolved class.
-  // Note: the attribute could be in a super class, so we use eAllAttributes to get also super class attributes.
-  var evoAttribute =evoParentClass.eAllAttributes->select(e|e.name = currentAttribute.name)->first();
-  'Converted: EAttribute '.concat(self.name).debug();
-  return evoAttribute;*/
   var parentClass = self.eContainingClass;
   var evoParentClass = parentClass.convert();
-  var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoReference | evoReference.name == self.name);
+  var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
   return evoAttribute;
 }
-
+operation Delta!AddedEAttribute convert() : evoMetamodel!ecore::EAttribute {
+  // (self is the PropertyCallExp referredProperty)  
+  'Converting EAttribute '.concat(self.name).debug();
+  var parentClass = self.eContainingClass.applicationElement;
+  var evoParentClass = parentClass.convert();
+  var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
+  return evoAttribute;
+}
 // EReference is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : mtl!ocl::ecore::PropertyCallExp) : evoMetamodel!ecore::EReference {
-  // (self is the PropertyCallExp referredProperty)
-  
-  /*'Converting EReference '.concat(self.name).debug();
-  
-  // get EReference evolved parent EClass
-  var parentClass = s.source.eType;
-  var evoParentClass = parentClass.convert();
-  
-  // get the evolved reference from the evolved class.
-  // Note: the reference could be in a super class, so we use eAllReferences to get also super class references.
-  var evoReference = evoParentClass.eAllReferences->selectOne(evoReference | evoReference.name == self.name);
-  
-  'Converted: EReference '.concat(self.name).debug();
-  
-  return evoReference;*/
+operation Metamodel!ecore::EReference convert() : evoMetamodel!ecore::EReference {
+  'Converting EReference '.concat(self.name).debug();
   var parentClass = self.eContainingClass;
   var evoParentClass = parentClass.convert();
   var evoReference = evoParentClass.eAllReferences->selectOne(evoReference | evoReference.name == self.name);
@@ -620,11 +561,8 @@ operation Metamodel!ecore::EReference convertFromPropertyCallExp(s : mtl!ocl::ec
 
 operation Metamodel!ecore::EEnum convert() : evoMetamodel!ecore::EEnum {
   'Converting EEnum '.concat(self.name).debug();
-
   // get the relative enum from the evolved metamodel
   var evoEnum = evoMetamodel!ecore::EEnum.allInstances()->selectOne(enum | enum.name == self.name);
-  
   'Converted: EEnum '.concat(self.name).debug();
-  
   return evoEnum;
 }
