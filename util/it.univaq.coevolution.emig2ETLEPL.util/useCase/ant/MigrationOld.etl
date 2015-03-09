@@ -122,8 +122,8 @@ rule changeReferenceTypeBNR3
 	transform templateInvocationOld : mtl!TemplateInvocation
 	to templateInvocationNew : evoMtl!TemplateInvocation {
 	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
-		'CI SONO'.println();
-		var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
+		'I am here!'.println();
+	/*	var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
 		var  changeRefBNR3 = Delta!ChangedEReference.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangeRefBNR3));
 				
 	var propertyCallExp = templateInvocationOld.argument.at(0);
@@ -156,7 +156,7 @@ rule changeReferenceTypeBNR3
     templateInvocationNew.argument.at(0).eType = evoReferencedClass; // the reference changed type => it must be updated
     templateInvocationNew.definition = replacerTemplate.convert();
     templateInvocationNew.eType = templateInvocationOld.eType.convert();
-    'Transformed for BNR3: TemplateInvocation'.debug();
+    'Transformed for BNR3: TemplateInvocation'.debug();*/
 	}	
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
