@@ -8,40 +8,17 @@
 [file (aMigrationProgram.name + '.etl', false, 'UTF-8')]
 pre {
 	"Running ETL\n".println();
-	
 	// GLOBAL VARIABLES
-	
 	var DEBUG_MODE = false;
-	
-	// map <reference, referenced class attribute>
-	// a cache to don't ask the user the same question over and over again,
-	// used for replacing attributes that became references with
-	// an attribute of the referenced class.
-	var referenceReplacers = Map{};
-	
-	// map <attribute, replacer attribute>
-	// as above, but for replacing attributes that were deleted with
-	// an added attribute.
-	var deletedAttributeReplacers = Map{};
-	
-	// map <reference, TemplateInvocation replacer template>
-	// as above, but for replacing referred templates in template invocations
-	// when they became invalid since the reference changed type.
-	var templateReplacers = Map{};
 }
-
 post {
 	"\nRunning Successful".println();
 }
-
 operation Any debug() : Any {
   if (DEBUG_MODE) {
     return self.println();
   }
 }
-
-// Custom equivalent function:
-// is recursive and returns the element itself if there is no matching rule for it.
 operation Any convert() {
   
   var equivalent;
@@ -88,7 +65,6 @@ rule [it.name/]
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
 // Updates everything to the evolved metamodel without doing any other change.
-
 rule Module
   transform s : mtl!Module
   to t : evoMtl!Module {
