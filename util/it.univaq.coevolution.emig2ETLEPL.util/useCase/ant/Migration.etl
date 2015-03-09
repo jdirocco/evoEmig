@@ -38,7 +38,7 @@ operation Any convert() {
 }
 /////////////////////MIGRATION PART /////////////////////////////////// 
 
-operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
+operation is_splitAttributeBNR2 (propCallExpOld : WebApp2HTML5!PropertyCallExp) : Boolean {
 	var  changedClassBNR2 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!splitAttributeBNR2ChangedClassBNR2));
 	var  delAttribute = Delta!DeletedEAttribute.allInstances()->selectOne(c | c.instanceOf(Pattern!splitAttributeBNR2DelAttribute));
 	return (not Pattern!splitAttributeBNR2.isUndefined()) and
@@ -47,8 +47,8 @@ operation is_splitAttributeBNR2 (propCallExpOld : mtl!PropertyCallExp) : Boolean
 	;
 }
 rule splitAttributeBNR2
-	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
-	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp{
+	transform propCallExpOld : WebApp2HTML5!ocl::ecore::PropertyCallExp
+	to propCallExpNew : evoWebApp2HTML5!ocl::ecore::PropertyCallExp{
 	guard: is_splitAttributeBNR2(propCallExpOld)
 		var a1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A1))->at(0);
 		var a2 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!splitAttributeBNR2A2))->at(1);
@@ -68,7 +68,7 @@ rule splitAttributeBNR2
 				propCallExpNew.propertyEndPosition <- propCallExpOld.propertyEndPosition;	
 				propCallExpNew.markedPre <- propCallExpOld.markedPre;
 }
-operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
+operation is_extractInlineMetaClassBNR1 (propCallExpOld : WebApp2HTML5!PropertyCallExp) : Boolean {
 
 var changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
 var changedClassBNR1 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedClassBNR1));
@@ -84,8 +84,8 @@ and 1 = 1 and	1 = 1 and 1 = 1  and addedClassBNR1.name = addReferenceBNR1.eType.
 }
 //TODO
 rule extractInlineMetaClassBNR1
-	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
-	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
+	transform propCallExpOld : WebApp2HTML5!ocl::ecore::PropertyCallExp
+	to propCallExpNew : evoWebApp2HTML5!ocl::ecore::PropertyCallExp {
 	guard: is_extractInlineMetaClassBNR1(propCallExpOld)
 		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute1BNR1))->at(0);				 
 		var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute2BNR1))->at(1);				 
@@ -107,20 +107,20 @@ rule extractInlineMetaClassBNR1
 				propCallExpNew.markedPre <- propCallExpOld.markedPre.convert();	
 }
 //TODO
-operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
+operation is_changeReferenceTypeBNR3 (templateInvocationOld : WebApp2HTML5!TemplateInvocation) : Boolean {
 var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
 var  changeRefBNR3 = Delta!ChangedEReference.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangeRefBNR3));
 'BNR3'.println();
-if (not templateInvocationOld.argument->at(0)->isTypeOf(mtl!ocl::ecore::PropertyCallExp))
+if (not templateInvocationOld.argument->at(0)->isTypeOf(WebApp2HTML5!ocl::ecore::PropertyCallExp))
 	return false;
-if (not templateInvocationOld.argument->at(0).referredProperty->isTypeOf(Metamodel!ecore::EReference))
+if (not templateInvocationOld.argument->at(0).referredProperty->isTypeOf(Webapp!ecore::EReference))
 	return false;
 return (not Pattern!changeReferenceTypeBNR3.isUndefined()) and (templateInvocationOld.argument->at(0).referredProperty.name = changeRefBNR3.name) and 
        (templateInvocationOld.argument->at(0).source.eType.name == changedClassBNR3.name);
 }
 rule changeReferenceTypeBNR3
-	transform templateInvocationOld : mtl!TemplateInvocation
-	to templateInvocationNew : evoMtl!TemplateInvocation {
+	transform templateInvocationOld : WebApp2HTML5!TemplateInvocation
+	to templateInvocationNew : evoWebApp2HTML5!TemplateInvocation {
 	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
 		'I am here!'.println();
 	/*	var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
@@ -137,7 +137,7 @@ rule changeReferenceTypeBNR3
    
   	// let the user choose the compatible template to use
        
-  	var compatibleTemplates = mtl!Template.allInstances()->select(otherTemplate | otherTemplate.isCompatibleWith(evoReferencedClass));
+  	var compatibleTemplates = WebApp2HTML5!Template.allInstances()->select(otherTemplate | otherTemplate.isCompatibleWith(evoReferencedClass));
   
   	var message = template.name.concat(' is not compatible anymore with ').concat(parentClass.name).concat('.').concat(reference.name)
                 .concat(', please select the template to use:');
@@ -163,8 +163,8 @@ rule changeReferenceTypeBNR3
 // Updates everything to the evolved metamodel without doing any other change.
 
 rule Module
-  transform s : mtl!Module
-  to t : evoMtl!Module {
+  transform s : WebApp2HTML5!Module
+  to t : evoWebApp2HTML5!Module {
   	'Transforming Module'.debug();
 	t.name = s.name;
 	t.nsURI = s.nsURI;
@@ -186,8 +186,8 @@ rule Module
 }
  
 rule TypedModel
-  transform s : mtl!TypedModel
-  to t : evoMtl!TypedModel {
+  transform s : WebApp2HTML5!TypedModel
+  to t : evoWebApp2HTML5!TypedModel {
   	'Transforming TypedModel'.debug();
 
     t.takesTypesFrom = s.takesTypesFrom.convert(); // contains the main metamodel EPackage
@@ -196,8 +196,8 @@ rule TypedModel
   }
 
 rule Template
-  transform s : mtl!Template
-  to t : evoMtl!Template {
+  transform s : WebApp2HTML5!Template
+  to t : evoWebApp2HTML5!Template {
   	'Transforming Template'.debug();
   
     t.name = s.name;
@@ -226,8 +226,8 @@ rule Template
   }
   
 rule FileBlock
-  transform s : mtl!FileBlock
-  to t : evoMtl!FileBlock {
+  transform s : WebApp2HTML5!FileBlock
+  to t : evoWebApp2HTML5!FileBlock {
   	'Transforming FileBlock'.debug();
   
     t.name = s.name;
@@ -252,8 +252,8 @@ rule FileBlock
   }
   
 rule ForBlock
-  transform s : mtl!ForBlock
-  to t : evoMtl!ForBlock {
+  transform s : WebApp2HTML5!ForBlock
+  to t : evoWebApp2HTML5!ForBlock {
   	'Transforming ForBlock'.debug();
 
     t.name = s.name;
@@ -280,8 +280,8 @@ rule ForBlock
   }
   
 rule IfBlock
-  transform s : mtl!IfBlock
-  to t : evoMtl!IfBlock {
+  transform s : WebApp2HTML5!IfBlock
+  to t : evoWebApp2HTML5!IfBlock {
     'Transforming IfBlock'.debug(); 
     t.name = s.name;
     t.ordered = s.ordered;
@@ -301,8 +301,8 @@ rule IfBlock
   }
   
 rule Block
-  transform s : mtl!Block
-  to t : evoMtl!Block {
+  transform s : WebApp2HTML5!Block
+  to t : evoWebApp2HTML5!Block {
     'Transforming Block'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
@@ -318,8 +318,8 @@ rule Block
   }
   
 rule TemplateInvocation
-  transform s : mtl!TemplateInvocation
-  to t : evoMtl!TemplateInvocation {
+  transform s : WebApp2HTML5!TemplateInvocation
+  to t : evoWebApp2HTML5!TemplateInvocation {
   guard : not is_changeReferenceTypeBNR3(s)
   	'Transforming TemplateInvocation'.debug();
     t.name = s.name;
@@ -340,11 +340,11 @@ rule TemplateInvocation
   
 // We need to use the right type here, which is under ocl::ecore,
 // otherwise the rule won't match and won't be called.
-// Don't use @greedy + mtl!StringLiteralExp since would lead to
+// Don't use @greedy + WebApp2HTML5!StringLiteralExp since would lead to
 // ArrayStoreException and cast errors when copying the transformed object in the parent.
 rule StringLiteralExp
-  transform s : mtl!ocl::ecore::StringLiteralExp
-  to t : evoMtl!ocl::ecore::StringLiteralExp {   
+  transform s : WebApp2HTML5!ocl::ecore::StringLiteralExp
+  to t : evoWebApp2HTML5!ocl::ecore::StringLiteralExp {   
   	'Transforming StringLiteralExp'.debug();
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
@@ -354,8 +354,8 @@ rule StringLiteralExp
   }
   
 rule PropertyCallExp
-  transform s : mtl!ocl::ecore::PropertyCallExp
-  to t : evoMtl!ocl::ecore::PropertyCallExp {
+  transform s : WebApp2HTML5!ocl::ecore::PropertyCallExp
+  to t : evoWebApp2HTML5!ocl::ecore::PropertyCallExp {
   guard : not (is_extractInlineMetaClassBNR1(s) or is_splitAttributeBNR2(s))
     'Transforming PropertyCallExp'.debug();
     t.name = s.name;
@@ -377,8 +377,8 @@ rule PropertyCallExp
   }
   
 rule OperationCallExp
-  transform s : mtl!ocl::ecore::OperationCallExp
-  to t : evoMtl!ocl::ecore::OperationCallExp {
+  transform s : WebApp2HTML5!ocl::ecore::OperationCallExp
+  to t : evoWebApp2HTML5!ocl::ecore::OperationCallExp {
   	'Transforming OperationCallExp'.debug();
     t.startPosition = s.startPosition;
     t.endPosition = s.endPosition;
@@ -394,8 +394,8 @@ rule OperationCallExp
   }
   
 rule TypeExp
-  transform s : mtl!ocl::ecore::TypeExp
-  to t : evoMtl!ocl::ecore::TypeExp {
+  transform s : WebApp2HTML5!ocl::ecore::TypeExp
+  to t : evoWebApp2HTML5!ocl::ecore::TypeExp {
     'Transforming TypeExp'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
@@ -412,8 +412,8 @@ rule TypeExp
   }
 
 rule VariableExp
-  transform s : mtl!ocl::ecore::VariableExp
-  to t : evoMtl!ocl::ecore::VariableExp {
+  transform s : WebApp2HTML5!ocl::ecore::VariableExp
+  to t : evoWebApp2HTML5!ocl::ecore::VariableExp {
     'Transforming VariableExp'.debug();
 	t.name = s.name;
 	t.ordered = s.ordered;
@@ -432,8 +432,8 @@ rule VariableExp
   }
 
 rule Variable
-  transform s : mtl!ocl::ecore::Variable
-  to t : evoMtl!ocl::ecore::Variable {
+  transform s : WebApp2HTML5!ocl::ecore::Variable
+  to t : evoWebApp2HTML5!ocl::ecore::Variable {
     'Transforming Variable'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
@@ -451,8 +451,8 @@ rule Variable
   }
   
 rule SetType
-  transform s : mtl!ocl::ecore::SetType
-  to t : evoMtl!ocl::ecore::SetType {
+  transform s : WebApp2HTML5!ocl::ecore::SetType
+  to t : evoWebApp2HTML5!ocl::ecore::SetType {
     'Transforming SetType'.debug();
     t.name = s.name;
     t.instanceClassName = s.instanceClassName;
@@ -472,8 +472,8 @@ rule SetType
   }
 
 rule OrderedSetType
-  transform s : mtl!ocl::ecore::OrderedSetType
-  to t : evoMtl!ocl::ecore::OrderedSetType {
+  transform s : WebApp2HTML5!ocl::ecore::OrderedSetType
+  to t : evoWebApp2HTML5!ocl::ecore::OrderedSetType {
     'Transforming OrderedSetType'.debug();
     t.name = s.name;
     t.instanceClassName = s.instanceClassName;
@@ -491,8 +491,8 @@ rule OrderedSetType
   }
   
 rule CollectionLiteralExp
-  transform s : mtl!ocl::ecore::CollectionLiteralExp
-  to t : evoMtl!ocl::ecore::CollectionLiteralExp {
+  transform s : WebApp2HTML5!ocl::ecore::CollectionLiteralExp
+  to t : evoWebApp2HTML5!ocl::ecore::CollectionLiteralExp {
     'Transforming CollectionLiteralExp'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
@@ -513,8 +513,8 @@ rule CollectionLiteralExp
   }
   
 rule CollectionItem
-  transform s : mtl!ocl::ecore::CollectionItem
-  to t : evoMtl!ocl::ecore::CollectionItem {
+  transform s : WebApp2HTML5!ocl::ecore::CollectionItem
+  to t : evoWebApp2HTML5!ocl::ecore::CollectionItem {
     'Transforming CollectionItem'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
@@ -531,25 +531,25 @@ rule CollectionItem
 // Metamodel instances are converted without transformation rules since their counterpart
 // already exists in the evoMetamodel, it just need to be retrieved.
 
-operation Metamodel!ecore::EPackage convert() : evoMetamodel!ecore::EPackage {
+operation Webapp!ecore::EPackage convert() : evoWebapp!ecore::EPackage {
   'Converting EPackage '.concat(self.name).debug();
   // get the relative package from the evolved metamodel
-  var evoPackage = evoMetamodel!ecore::EPackage.allInstances()->selectOne(package | package.name == self.name);  
+  var evoPackage = evoWebapp!ecore::EPackage.allInstances()->selectOne(package | package.name == self.name);  
   'Converted: EPackage '.concat(self.name).debug();
   return evoPackage;
 }
 
-operation Metamodel!ecore::EClass convert() : evoMetamodel!ecore::EClass {
+operation Webapp!ecore::EClass convert() : evoWebapp!ecore::EClass {
   'Converting EClass '.concat(self.name).debug();
   // get the relative class from the evolved metamodel
-  var evoClass = evoMetamodel!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);  
+  var evoClass = evoWebapp!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);  
   'Converted: EClass '.concat(self.name).debug();
   return evoClass;
 }
 
 // EAttribute is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EAttribute convert() : evoMetamodel!ecore::EAttribute {
+operation Webapp!ecore::EAttribute convert() : evoWebapp!ecore::EAttribute {
   // (self is the PropertyCallExp referredProperty)  
   'Converting EAttribute '.concat(self.name).debug();
   var parentClass = self.eContainingClass;
@@ -557,7 +557,7 @@ operation Metamodel!ecore::EAttribute convert() : evoMetamodel!ecore::EAttribute
   var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
   return evoAttribute;
 }
-operation Delta!AddedEAttribute convert() : evoMetamodel!ecore::EAttribute {
+operation Delta!AddedEAttribute convert() : evoWebapp!ecore::EAttribute {
   // (self is the PropertyCallExp referredProperty)  
   'Converting EAttribute '.concat(self.name).debug();
   var parentClass = self.eContainingClass;
@@ -567,15 +567,15 @@ operation Delta!AddedEAttribute convert() : evoMetamodel!ecore::EAttribute {
   var evoAttribute = evoParentClass.eAllAttributes->selectOne(evoAttribute | evoAttribute.name == self.name);
   return evoAttribute;
 }
-operation Delta!AddedEClass convert() : evoMetamodel!ecore::EClass {
+operation Delta!AddedEClass convert() : evoWebapp!ecore::EClass {
   // (self is the PropertyCallExp referredProperty)  
   'Converting EAttribute '.concat(self.name).debug();
-  var evoParentClass = evoMetamodel!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);
+  var evoParentClass = evoWebapp!ecore::EClass.allInstances()->selectOne(metaclass | metaclass.name == self.name);
   return evoParentClass;
 }
 // EReference is converted by using the PropertyCallExp since otherwise there is no reliable way to get the parent class
 // (comparison with allInstances() returns always false), while with it the source.eType can be used.
-operation Metamodel!ecore::EReference convert() : evoMetamodel!ecore::EReference {
+operation Webapp!ecore::EReference convert() : evoWebapp!ecore::EReference {
   'Converting EReference '.concat(self.name).debug();
   var parentClass = self.eContainingClass;
   var evoParentClass = parentClass.convert();
@@ -583,10 +583,10 @@ operation Metamodel!ecore::EReference convert() : evoMetamodel!ecore::EReference
   return evoReference;
 }
 
-operation Metamodel!ecore::EEnum convert() : evoMetamodel!ecore::EEnum {
+operation Webapp!ecore::EEnum convert() : evoWebapp!ecore::EEnum {
   'Converting EEnum '.concat(self.name).debug();
   // get the relative enum from the evolved metamodel
-  var evoEnum = evoMetamodel!ecore::EEnum.allInstances()->selectOne(enum | enum.name == self.name);
+  var evoEnum = evoWebapp!ecore::EEnum.allInstances()->selectOne(enum | enum.name == self.name);
   'Converted: EEnum '.concat(self.name).debug();
   return evoEnum;
 }
