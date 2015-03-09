@@ -1,25 +1,7 @@
 pre {
 	"Running ETL\n".println();
-	
 	// GLOBAL VARIABLES
-	
 	var DEBUG_MODE = false;
-	
-	// map <reference, referenced class attribute>
-	// a cache to don't ask the user the same question over and over again,
-	// used for replacing attributes that became references with
-	// an attribute of the referenced class.
-	var referenceReplacers = Map{};
-	
-	// map <attribute, replacer attribute>
-	// as above, but for replacing attributes that were deleted with
-	// an added attribute.
-	var deletedAttributeReplacers = Map{};
-	
-	// map <reference, TemplateInvocation replacer template>
-	// as above, but for replacing referred templates in template invocations
-	// when they became invalid since the reference changed type.
-	var templateReplacers = Map{};
 }
 
 post {
@@ -80,12 +62,12 @@ rule splitAttributeBNR2
 				propCallExpNew.unique <- propCallExpOld.unique;	
 				propCallExpNew.lowerBound <- propCallExpOld.lowerBound;	
 				propCallExpNew.upperBound <- propCallExpOld.upperBound;	
-				propCallExpNew.startPosition <- 1;	
+				propCallExpNew.startPosition <- propCallExpOld.startPosition;	
 				propCallExpNew.endPosition <- propCallExpOld.endPosition;	
 				propCallExpNew.propertyStartPosition <- propCallExpOld.propertyStartPosition;	
 				propCallExpNew.propertyEndPosition <- propCallExpOld.propertyEndPosition;	
 				propCallExpNew.markedPre <- propCallExpOld.markedPre;
-	}
+}
 operation is_extractInlineMetaClassBNR1 (propCallExpOld : mtl!PropertyCallExp) : Boolean {
 
 var changedPackageBNR1 = Delta!ChangedEPackage.allInstances()->selectOne(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1ChangedPackageBNR1));
@@ -105,7 +87,7 @@ rule extractInlineMetaClassBNR1
 	transform propCallExpOld : mtl!ocl::ecore::PropertyCallExp
 	to propCallExpNew : evoMtl!ocl::ecore::PropertyCallExp {
 	guard: is_extractInlineMetaClassBNR1(propCallExpOld)
-		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute1BNR1))->first();				 
+		var addedAttribute1BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute1BNR1))->at(0);				 
 		var addedAttribute2BNR1 = Delta!AddedEAttribute.allInstances()->select(c | c.instanceOf(Pattern!extractInlineMetaClassBNR1AddedAttribute2BNR1))->at(1);				 
 				propCallExpNew.name <- propCallExpOld.name.convert();	
 
@@ -123,20 +105,59 @@ rule extractInlineMetaClassBNR1
 				propCallExpNew.propertyStartPosition <- propCallExpOld.propertyStartPosition.convert();	
 				propCallExpNew.propertyEndPosition <- propCallExpOld.propertyEndPosition.convert();	
 				propCallExpNew.markedPre <- propCallExpOld.markedPre.convert();	
-	}
+}
 //TODO
 operation is_changeReferenceTypeBNR3 (templateInvocationOld : mtl!TemplateInvocation) : Boolean {
-var  cc = Delta!ChangedEClass.allInstances()->select(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
-return 
-	(not Pattern!changeReferenceTypeBNR3.isUndefined()) and cc.applicationElement = templateInvocationOld.argument.at(0).source.eType  and  
- 1 = 1 ;
-}/*
+var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
+var  changeRefBNR3 = Delta!ChangedEReference.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangeRefBNR3));
+'BNR3'.println();
+if (not templateInvocationOld.argument->at(0)->isTypeOf(mtl!ocl::ecore::PropertyCallExp))
+	return false;
+if (not templateInvocationOld.argument->at(0).referredProperty->isTypeOf(Metamodel!ecore::EReference))
+	return false;
+return (not Pattern!changeReferenceTypeBNR3.isUndefined()) and (templateInvocationOld.argument->at(0).referredProperty.name = changeRefBNR3.name) and 
+       (templateInvocationOld.argument->at(0).source.eType.name == changedClassBNR3.name);
+}
 rule changeReferenceTypeBNR3
 	transform templateInvocationOld : mtl!TemplateInvocation
-	to templateInvocationNew : mtl!TemplateInvocation {
+	to templateInvocationNew : evoMtl!TemplateInvocation {
 	guard: is_changeReferenceTypeBNR3(templateInvocationOld)
-				name <- templateInvocationOld.name.convert();	
-	}*/	
+		'CI SONO'.println();
+		var  changedClassBNR3 = Delta!ChangedEClass.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangedClassBNR3));
+		var  changeRefBNR3 = Delta!ChangedEReference.allInstances()->selectOne(c | c.instanceOf(Pattern!changeReferenceTypeBNR3ChangeRefBNR3));
+				
+	var propertyCallExp = templateInvocationOld.argument.at(0);
+    var template = templateInvocationNew.definition;
+    var reference = propertyCallExp.referredProperty;
+    
+    var evoReference = reference.convert(propertyCallExp);
+    var evoReferencedClass = evoReference.eReferenceType;
+    var parentClass = propertyCallExp.source.eType; // reference parent class
+  
+   
+  	// let the user choose the compatible template to use
+       
+  	var compatibleTemplates = mtl!Template.allInstances()->select(otherTemplate | otherTemplate.isCompatibleWith(evoReferencedClass));
+  
+  	var message = template.name.concat(' is not compatible anymore with ').concat(parentClass.name).concat('.').concat(reference.name)
+                .concat(', please select the template to use:');
+  	var replacerTemplate = System.user.choose(message, compatibleTemplates);
+    
+    templateInvocationNew.name = templateInvocationOld.name;
+    templateInvocationNew.ordered = templateInvocationOld.ordered;
+    templateInvocationNew.unique = templateInvocationOld.unique;
+    templateInvocationNew.lowerBound = templateInvocationOld.lowerBound;
+    templateInvocationNew.upperBound = templateInvocationOld.upperBound;
+    
+    templateInvocationNew.startPosition = templateInvocationOld.startPosition;
+    templateInvocationNew.endPosition = templateInvocationOld.endPosition;
+    templateInvocationNew.super = templateInvocationOld.super;
+    templateInvocationNew.argument = templateInvocationOld.argument.convert();
+    templateInvocationNew.argument.at(0).eType = evoReferencedClass; // the reference changed type => it must be updated
+    templateInvocationNew.definition = replacerTemplate.convert();
+    templateInvocationNew.eType = templateInvocationOld.eType.convert();
+    'Transformed for BNR3: TemplateInvocation'.debug();
+	}	
 ///////////////////////////////////////////////////////////////////////
 ///////////////////// CONSERVATIVE COPY ///////////////////////////////
 // Updates everything to the evolved metamodel without doing any other change.
@@ -299,7 +320,7 @@ rule Block
 rule TemplateInvocation
   transform s : mtl!TemplateInvocation
   to t : evoMtl!TemplateInvocation {
---  guard : not is_changeReferenceTypeBNR3(s)
+  guard : not is_changeReferenceTypeBNR3(s)
   	'Transforming TemplateInvocation'.debug();
     t.name = s.name;
     t.ordered = s.ordered;
