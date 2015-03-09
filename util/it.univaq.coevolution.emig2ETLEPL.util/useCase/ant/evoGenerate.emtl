@@ -27,7 +27,7 @@
           <loopVariable name="model">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Model"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/147">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/148">
             <source xsi:type="ocl.ecore:VariableExp" name="aWebApp" referredVariable="/0/Generate/aWebApp">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//WebApp"/>
             </source>
@@ -47,7 +47,7 @@
           <loopVariable name="collection">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Collection"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/148">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/149">
             <source xsi:type="ocl.ecore:VariableExp" name="aWebApp" referredVariable="/0/Generate/aWebApp">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//WebApp"/>
             </source>
@@ -67,7 +67,7 @@
           <loopVariable name="aTemplate">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Template"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/149">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/150">
             <source xsi:type="ocl.ecore:VariableExp" name="aWebApp" referredVariable="/0/Generate/aWebApp">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//WebApp"/>
             </source>
@@ -87,7 +87,7 @@
           <loopVariable name="view">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//View"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/150">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/151">
             <source xsi:type="ocl.ecore:VariableExp" name="aWebApp" referredVariable="/0/Generate/aWebApp">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//WebApp"/>
             </source>
@@ -107,7 +107,7 @@
           <loopVariable name="controller">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Controller"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/151">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/152">
             <source xsi:type="ocl.ecore:VariableExp" name="aWebApp" referredVariable="/0/Generate/aWebApp">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//WebApp"/>
             </source>
@@ -177,7 +177,7 @@
           <loopVariable name="attribute">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Attribute"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/152">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/153">
             <source xsi:type="ocl.ecore:VariableExp" name="model" referredVariable="/0/generateModel/model">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Model"/>
             </source>
@@ -402,7 +402,7 @@
           <loopVariable name="subview">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//View"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/150">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/151">
             <source xsi:type="ocl.ecore:VariableExp" name="view" referredVariable="/0/generateView/view">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//View"/>
             </source>
@@ -425,16 +425,7 @@
           <referredProperty xsi:type="ecore:EAttribute" href="evoWebapp.ecore#//NamedElement/name"/>
         </body>
         <body xsi:type="ocl.ecore:StringLiteralExp" stringSymbol=",&#xA;    data: {&#xA;      "/>
-        <body xsi:type="mtl:TemplateInvocation" definition="/0/generateViewData">
-          <eType xsi:type="ocl.ecore:PrimitiveType" href="http://www.eclipse.org/ocl/1.1.0/oclstdlib.ecore#/0/String"/>
-          <argument xsi:type="ocl.ecore:PropertyCallExp">
-            <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Data"/>
-            <source xsi:type="ocl.ecore:VariableExp" name="view" referredVariable="/0/generateView/view">
-              <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//View"/>
-            </source>
-            <referredProperty xsi:type="ecore:EReference" href="evoWebapp.ecore#//View/data"/>
-          </argument>
-        </body>
+        <body xsi:type="mtl:TemplateInvocation"/>
         <body xsi:type="ocl.ecore:StringLiteralExp" stringSymbol="&#xA;    }&#xA;  };&#xA;  return "/>
         <body xsi:type="ocl.ecore:PropertyCallExp">
           <eType xsi:type="ocl.ecore:PrimitiveType" href="http://www.eclipse.org/ocl/1.1.0/oclstdlib.ecore#/0/String"/>
@@ -513,7 +504,7 @@
           <loopVariable name="parameter">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Attribute"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/152">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/153">
             <source xsi:type="ocl.ecore:VariableExp" name="controller" referredVariable="/0/generateController/controller">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Controller"/>
             </source>
@@ -589,7 +580,7 @@
           <loopVariable name="binding">
             <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//RouterBinding"/>
           </loopVariable>
-          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/153">
+          <iterSet xsi:type="ocl.ecore:PropertyCallExp" eType="/154">
             <source xsi:type="ocl.ecore:VariableExp" name="router" referredVariable="/0/generateRouter/router">
               <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Router"/>
             </source>
@@ -726,6 +717,13 @@
   <ocl.ecore:StringLiteralExp stringSymbol="UTF-8">
     <eType xsi:type="ocl.ecore:PrimitiveType" href="http://www.eclipse.org/ocl/1.1.0/oclstdlib.ecore#/0/String"/>
   </ocl.ecore:StringLiteralExp>
+  <ocl.ecore:PropertyCallExp>
+    <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Data"/>
+    <source xsi:type="ocl.ecore:VariableExp" name="view" referredVariable="/0/generateView/view">
+      <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//View"/>
+    </source>
+    <referredProperty xsi:type="ecore:EReference" href="evoWebapp.ecore#//View/data"/>
+  </ocl.ecore:PropertyCallExp>
   <ocl.ecore:VariableExp name="aTemplate" referredVariable="/0/generateTemplate/aTemplate">
     <eType xsi:type="ecore:EClass" href="evoWebapp.ecore#//Template"/>
   </ocl.ecore:VariableExp>
